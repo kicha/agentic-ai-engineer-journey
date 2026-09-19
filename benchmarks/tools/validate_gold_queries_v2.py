@@ -8,6 +8,13 @@ from benchmarks.evaluation.gold_models import (
     Answerability,
     GoldDatasetV2,
 )
+
+from benchmarks.paths import (
+    BENCHMARK_MANIFEST_PATH,
+    BENCHMARK_UNITS_PATH,
+    GOLD_QUERIES_PATH,
+)
+
 from app.utils.logging_config import (
     configure_logging,
 )
@@ -19,15 +26,9 @@ logger = logging.getLogger(__name__)
 # PATHS
 # ============================================================
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-
-BENCHMARK_DIRECTORY = PROJECT_ROOT / "data" / "benchmark"
-
-GOLD_PATH = BENCHMARK_DIRECTORY / "gold_queries_v2_draft.json"
-
-UNITS_PATH = BENCHMARK_DIRECTORY / "benchmark_v2_units.json"
-
-MANIFEST_PATH = BENCHMARK_DIRECTORY / "manifest.json"
+GOLD_PATH = GOLD_QUERIES_PATH
+UNITS_PATH = BENCHMARK_UNITS_PATH
+MANIFEST_PATH = BENCHMARK_MANIFEST_PATH
 
 
 # ============================================================

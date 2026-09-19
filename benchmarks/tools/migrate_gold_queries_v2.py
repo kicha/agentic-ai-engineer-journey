@@ -10,6 +10,10 @@ from benchmarks.evaluation.gold_models import (
     GoldDatasetV2,
     GoldQueryV2,
 )
+from benchmarks.paths import (
+    BENCHMARK_MANIFEST_PATH,
+    BENCHMARK_WORK_DIR,
+)
 from app.utils.logging_config import (
     configure_logging,
 )
@@ -21,11 +25,9 @@ logger = logging.getLogger(__name__)
 # PATHS
 # ============================================================
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-BENCHMARK_DIRECTORY = PROJECT_ROOT / "data" / "benchmark"
-SOURCE_GOLD_PATH = BENCHMARK_DIRECTORY / "gold_queries.json"
-MANIFEST_PATH = BENCHMARK_DIRECTORY / "manifest.json"
-OUTPUT_PATH = BENCHMARK_DIRECTORY / "gold_queries_v2_draft.json"
+SOURCE_GOLD_PATH = BENCHMARK_WORK_DIR / "gold_queries_v1.json"
+MANIFEST_PATH = BENCHMARK_MANIFEST_PATH
+OUTPUT_PATH = BENCHMARK_WORK_DIR / "gold_queries_v2_draft.json"
 
 
 # ============================================================

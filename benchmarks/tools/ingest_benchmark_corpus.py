@@ -1,5 +1,4 @@
 import logging
-from pathlib import Path
 from time import perf_counter
 
 from app.config.settings import (
@@ -12,6 +11,9 @@ from app.ingestion.markdown_corpus_loader import (
 from app.ingestion.pipeline import (
     StructureAwareRAGDemo,
 )
+from benchmarks.paths import (
+    BENCHMARK_DOCUMENTS_DIR,
+)
 from app.utils.logging_config import configure_logging
 
 logger = logging.getLogger(__name__)
@@ -21,8 +23,7 @@ logger = logging.getLogger(__name__)
 # PATHS
 # ============================================================
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DOCUMENTS_DIR = PROJECT_ROOT / "data" / "documents"
+DOCUMENTS_DIRECTORY = BENCHMARK_DOCUMENTS_DIR
 
 
 # ============================================================
@@ -35,7 +36,7 @@ def main() -> None:
     logger.info("Starting Benchmark V2 corpus ingestion.")
     config = ChunkingConfig()
     hybrid_config = HybridSearchConfig()
-    logger.info(f"documents_directory=" f"{DOCUMENTS_DIR}")
+    logger.info(f"documents_directory=" f"{DOCUMENTS_DIRECTORY}")
     logger.info(f"mongodb_database=" f"{config.mongodb_database}")
     logger.info(f"mongodb_parent_collection=" f"{config.mongodb_parent_collection}")
     logger.info(f"qdrant_collection=" f"{hybrid_config.collection_name}")
@@ -44,7 +45,7 @@ def main() -> None:
     # LOAD DOCUMENTS
     # ========================================================
 
-    loader = MarkdownCorpusLoader(documents_directory=DOCUMENTS_DIR)
+    loader = MarkdownCorpusLoader(documents_directory=DOCUMENTS_DIRECTORY)
     documents = loader.load()
     logger.info(f"documents_discovered=" f"{len(documents)}")
     for document in documents:

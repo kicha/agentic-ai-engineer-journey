@@ -1,6 +1,4 @@
-import json
 import logging
-from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel
@@ -9,15 +7,16 @@ from app.config.settings import (
     ChunkingConfig,
     HybridSearchConfig,
 )
-from app.repositories.parent_repository import ParentRepository
-from app.utils.logging_config import configure_logging
 from qdrant_client import QdrantClient
+from app.repositories.parent_repository import ParentRepository
+from benchmarks.paths import (
+    BENCHMARK_UNITS_PATH,
+)
+from app.utils.logging_config import configure_logging
 
 logger = logging.getLogger(__name__)
 
-
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-OUTPUT_PATH = PROJECT_ROOT / "data" / "benchmark" / "benchmark_v2_units.json"
+OUTPUT_PATH = BENCHMARK_UNITS_PATH
 
 
 class ChildExport(BaseModel):

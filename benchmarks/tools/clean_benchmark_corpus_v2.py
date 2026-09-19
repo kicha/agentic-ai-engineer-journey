@@ -2,12 +2,13 @@ import logging
 import re
 from pathlib import Path
 from app.utils.logging_config import configure_logging
+from benchmarks.paths import (
+    BENCHMARK_DOCUMENTS_DIR,
+)
 
 logger = logging.getLogger(__name__)
 
-
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DOCUMENTS_DIRECTORY = PROJECT_ROOT / "data" / "documents"
+DOCUMENTS_DIRECTORY = BENCHMARK_DOCUMENTS_DIR
 
 BOILERPLATE_PARAGRAPH = (
     "Operationally, this topic should be validated with reproducible "

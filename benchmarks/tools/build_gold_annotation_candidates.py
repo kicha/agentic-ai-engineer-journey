@@ -13,6 +13,12 @@ from benchmarks.evaluation.annotation_models import (
 from benchmarks.evaluation.gold_models import (
     GoldDatasetV2,
 )
+from benchmarks.paths import (
+    ANNOTATION_CANDIDATES_JSON_PATH,
+    ANNOTATION_CANDIDATES_MARKDOWN_PATH,
+    BENCHMARK_UNITS_PATH,
+    GOLD_QUERIES_DRAFT_PATH,
+)
 from app.utils.logging_config import (
     configure_logging,
 )
@@ -24,17 +30,10 @@ logger = logging.getLogger(__name__)
 # PATHS
 # ============================================================
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-
-BENCHMARK_DIRECTORY = PROJECT_ROOT / "data" / "benchmark"
-
-GOLD_DRAFT_PATH = BENCHMARK_DIRECTORY / "gold_queries_v2_draft.json"
-
-UNITS_PATH = BENCHMARK_DIRECTORY / "benchmark_v2_units.json"
-
-JSON_OUTPUT_PATH = BENCHMARK_DIRECTORY / "gold_annotation_candidates_v2.json"
-
-MARKDOWN_OUTPUT_PATH = BENCHMARK_DIRECTORY / "gold_annotation_candidates_v2.md"
+GOLD_DRAFT_PATH = GOLD_QUERIES_DRAFT_PATH
+UNITS_PATH = BENCHMARK_UNITS_PATH
+JSON_OUTPUT_PATH = ANNOTATION_CANDIDATES_JSON_PATH
+MARKDOWN_OUTPUT_PATH = ANNOTATION_CANDIDATES_MARKDOWN_PATH
 
 
 # ============================================================

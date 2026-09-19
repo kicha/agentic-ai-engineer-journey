@@ -2,21 +2,21 @@ import hashlib
 import json
 import logging
 import re
-from pathlib import Path
 
 from pydantic import BaseModel
 from app.utils.logging_config import configure_logging
 from app.utils.document_id import extract_document_id
+from benchmarks.paths import (
+    BENCHMARK_DOCUMENTS_DIR,
+    BENCHMARK_MANIFEST_PATH,
+    GOLD_QUERIES_PATH,
+)
 
 logger = logging.getLogger(__name__)
 
-
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DOCUMENTS_DIRECTORY = PROJECT_ROOT / "data" / "documents"
-BENCHMARK_DIRECTORY = PROJECT_ROOT / "data" / "benchmark"
-GOLD_QUERIES_PATH = BENCHMARK_DIRECTORY / "gold_queries.json"
-MANIFEST_PATH = BENCHMARK_DIRECTORY / "manifest.json"
 BENCHMARK_VERSION = "2.0"
+DOCUMENTS_DIRECTORY = BENCHMARK_DOCUMENTS_DIR
+MANIFEST_PATH = BENCHMARK_MANIFEST_PATH
 
 
 class DocumentManifestEntry(BaseModel):
