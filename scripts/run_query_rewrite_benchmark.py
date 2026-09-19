@@ -10,9 +10,9 @@ from app.config.settings import (
 
 from app.embeddings.embedding_service import EmbeddingService
 from app.embeddings.sparse_embedding_service import SparseEmbeddingService
-from app.evaluation.retrieval_benchmark import GoldQueryLoader
+from benchmarks.evaluation.retrieval_benchmark import GoldQueryLoader
 
-from app.evaluation.query_rewrite_benchmark import QueryRewriteBenchmarkEvaluator
+from benchmarks.evaluation.query_rewrite_benchmark import QueryRewriteBenchmarkEvaluator
 
 from app.querying.query_rewriter import (
     QueryRewriter,

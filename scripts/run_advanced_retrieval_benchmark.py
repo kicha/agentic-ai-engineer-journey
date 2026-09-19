@@ -13,11 +13,11 @@ from app.embeddings.sparse_embedding_service import (
     SparseEmbeddingService,
 )
 
-from app.evaluation.retrieval_benchmark import (
+from benchmarks.evaluation.retrieval_benchmark import (
     GoldQueryLoader,
 )
 
-from app.evaluation.advanced_retrieval_benchmark import (
+from benchmarks.evaluation.advanced_retrieval_benchmark import (
     AdvancedRetrievalBenchmarkEvaluator,
 )
 

@@ -5,7 +5,7 @@ from typing import List
 
 from pydantic import BaseModel
 
-from app.evaluation.retrieval_benchmark import (
+from benchmarks.evaluation.retrieval_benchmark import (
     GoldQuery,
 )
 
