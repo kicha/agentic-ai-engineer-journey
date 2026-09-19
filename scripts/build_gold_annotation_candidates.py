@@ -3,14 +3,14 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from app.evaluation.annotation_models import (
+from benchmarks.evaluation.annotation_models import (
     AnnotationWorkspace,
     ChildAnnotationCandidate,
     DocumentAnnotationCandidate,
     ParentAnnotationCandidate,
     QueryAnnotationRecord,
 )
-from app.evaluation.gold_models import (
+from benchmarks.evaluation.gold_models import (
     GoldDatasetV2,
 )
 from app.utils.logging_config import (

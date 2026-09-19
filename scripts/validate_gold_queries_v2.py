@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from app.evaluation.gold_models import (
+from benchmarks.evaluation.gold_models import (
     AnnotationStatus,
     Answerability,
     GoldDatasetV2,
