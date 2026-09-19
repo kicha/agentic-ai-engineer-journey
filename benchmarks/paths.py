@@ -51,3 +51,9 @@ ANNOTATION_CANDIDATES_MARKDOWN_PATH = (
 # ============================================================
 
 BENCHMARK_RESULTS_DIR = BENCHMARK_ROOT / "results"
+
+# ============================================================
+# LEGACY BENCHMARK ARTIFACTS
+# ============================================================
+
+LEGACY_GOLD_QUERIES_PATH = BENCHMARK_WORK_DIR / "gold_queries_v1.json"

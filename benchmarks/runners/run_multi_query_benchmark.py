@@ -55,9 +55,9 @@ from app.retrieval.multi_query_hybrid_retriever import (
 from app.vectorstore.hybrid_qdrant_store import (
     HybridQdrantStore,
 )
+from benchmarks.paths import GOLD_QUERIES_PATH
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-GOLD_QUERY_PATH = PROJECT_ROOT / "data" / "benchmark" / "gold_queries.json"
+GOLD_QUERY_PATH = GOLD_QUERIES_PATH
 
 
 def main() -> None:

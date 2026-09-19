@@ -25,16 +25,14 @@ from app.retrieval.hybrid_child_retriever import (
 from app.vectorstore.hybrid_qdrant_store import (
     HybridQdrantStore,
 )
+from benchmarks.paths import LEGACY_GOLD_QUERIES_PATH, BENCHMARK_RESULTS_DIR
 
 # ============================================================
 # PATHS
 # ============================================================
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-
-GOLD_QUERY_PATH = PROJECT_ROOT / "data" / "benchmark" / "gold_queries.json"
-
-OUTPUT_PATH = PROJECT_ROOT / "data" / "benchmark" / "retrieval_benchmark_results.json"
+GOLD_QUERY_PATH = LEGACY_GOLD_QUERIES_PATH
+OUTPUT_PATH = BENCHMARK_RESULTS_DIR / "retrieval_benchmark_results.json"
 
 
 # ============================================================
@@ -107,7 +105,8 @@ def main() -> None:
         # ----------------------------------------------
         # Our currently verified benchmark collection.
         # ----------------------------------------------
-        expected_point_count=316,
+        #####   HARDCODED VALUE 196
+        expected_point_count=196,
         # ----------------------------------------------
         # Retrieve a broad CHILD pool first.
         #

@@ -1,21 +1,24 @@
-import os
 from pathlib import Path
-
-from langchain_groq import ChatGroq
 
 from app.config.settings import (
     ChunkingConfig,
     HybridSearchConfig,
 )
 
-from app.embeddings.embedding_service import EmbeddingService
-from app.embeddings.sparse_embedding_service import SparseEmbeddingService
-from benchmarks.evaluation.retrieval_benchmark import GoldQueryLoader
+from app.embeddings.embedding_service import (
+    EmbeddingService,
+)
 
-from benchmarks.evaluation.query_rewrite_benchmark import QueryRewriteBenchmarkEvaluator
+from app.embeddings.sparse_embedding_service import (
+    SparseEmbeddingService,
+)
 
-from app.querying.query_rewriter import (
-    QueryRewriter,
+from benchmarks.evaluation.retrieval_benchmark import (
+    GoldQueryLoader,
+)
+
+from benchmarks.evaluation.advanced_retrieval_benchmark import (
+    AdvancedRetrievalBenchmarkEvaluator,
 )
 
 from app.repositories.parent_repository import (
@@ -41,14 +44,13 @@ from app.reranking.cross_encoder_reranker import (
 from app.retrieval.hybrid_rerank_mmr_retriever import (
     HybridRerankMMRRetriever,
 )
+from benchmarks.paths import GOLD_QUERIES_PATH
 
 # ============================================================
 # PATHS
 # ============================================================
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-
-GOLD_QUERY_PATH = PROJECT_ROOT / "data" / "benchmark" / "gold_queries.json"
+GOLD_QUERY_PATH = GOLD_QUERIES_PATH
 
 
 # ============================================================
@@ -58,37 +60,19 @@ GOLD_QUERY_PATH = PROJECT_ROOT / "data" / "benchmark" / "gold_queries.json"
 
 def main() -> None:
 
-    if not os.getenv("GROQ_API_KEY"):
-        raise RuntimeError("GROQ_API_KEY environment " "variable is not set.")
-
-    print()
-    print("=" * 110)
-    print("QUERY REWRITING RETRIEVAL BENCHMARK")
-    print("=" * 110)
-
-    # ========================================================
-    # CONFIG
-    # ========================================================
-
     config = ChunkingConfig()
-
     hybrid_config = HybridSearchConfig()
 
     # ========================================================
-    # DENSE EMBEDDINGS
+    # EMBEDDERS
     # ========================================================
 
     dense_embedder = EmbeddingService(config.embedding_model_name)
-
-    vector_size = dense_embedder.model.get_embedding_dimension()
-
-    # ========================================================
-    # SPARSE EMBEDDINGS
-    # ========================================================
-
     sparse_embedder = SparseEmbeddingService(
         model_name=(hybrid_config.sparse_model_name)
     )
+
+    vector_size = dense_embedder.model.get_embedding_dimension()
 
     # ========================================================
     # QDRANT
@@ -109,7 +93,7 @@ def main() -> None:
     try:
 
         # ====================================================
-        # CHILD RETRIEVER
+        # HYBRID CHILD
         # ====================================================
 
         hybrid_child_retriever = HybridChildRetriever(
@@ -119,10 +103,10 @@ def main() -> None:
         )
 
         # ====================================================
-        # PARENT EXPANSION
+        # HYBRID PARENT EXPANSION
         # ====================================================
 
-        hybrid_parent_child_retriever = HybridParentChildRetriever(
+        hybrid_parent_retriever = HybridParentChildRetriever(
             hybrid_child_retriever=(hybrid_child_retriever),
             parent_repository=(parent_repository),
         )
@@ -134,29 +118,14 @@ def main() -> None:
         reranker = CrossEncoderReranker()
 
         # ====================================================
-        # HYBRID -> CE -> MMR
+        # FULL PIPELINE
         # ====================================================
 
-        full_retriever = HybridRerankMMRRetriever(
-            hybrid_parent_child_retriever=(hybrid_parent_child_retriever),
+        hybrid_rerank_mmr = HybridRerankMMRRetriever(
+            hybrid_parent_child_retriever=hybrid_parent_retriever,
             reranker=(reranker),
             embedder=(dense_embedder),
             lambda_mult=0.7,
-        )
-
-        # ====================================================
-        # QUERY REWRITER LLM
-        # ====================================================
-
-        rewrite_llm = ChatGroq(
-            model=("openai/gpt-oss-120b"),
-            temperature=0,
-            max_retries=2,
-        )
-
-        query_rewriter = QueryRewriter(
-            llm=rewrite_llm,
-            fail_open=True,
         )
 
         # ====================================================
@@ -165,25 +134,28 @@ def main() -> None:
 
         gold_queries = GoldQueryLoader.load(GOLD_QUERY_PATH)
 
-        print(f"\nGold queries loaded: " f"{len(gold_queries)}")
-
         # ====================================================
-        # BENCHMARK
+        # EVALUATOR
         # ====================================================
 
-        evaluator = QueryRewriteBenchmarkEvaluator(
-            query_rewriter=(query_rewriter),
-            retriever=(full_retriever),
-            # Keep the EXACT same funnel settings
-            # as our previous advanced benchmark.
-            child_top_k=30,
+        evaluator = AdvancedRetrievalBenchmarkEvaluator(
+            hybrid_parent_retriever=(hybrid_parent_retriever),
+            cross_encoder=(reranker),
+            hybrid_rerank_mmr_retriever=(hybrid_rerank_mmr),
+            # broad child pool
+            hybrid_child_top_k=30,
+            # prune parent candidates
             cross_encoder_top_k=10,
+            # final context budget
             final_top_k=3,
         )
 
-        report = evaluator.evaluate(gold_queries)
+        # ====================================================
+        # RUN
+        # ====================================================
 
-        evaluator.print_summary(report)
+        results = evaluator.evaluate(gold_queries)
+        evaluator.print_summary(results)
 
     finally:
 
