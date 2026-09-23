@@ -1,34 +1,84 @@
 app/
-├── config/
-│   └── settings.py
-├── models/
-│   ├── document.py
-|   |── base_chunk.py
-│   ├── parent_chunk.py
-│   ├── child_chunk.py
-│   ├── elements.py
-│   └── metadata.py
 ├── chunking/
-│   ├── structure_detector.py
-│   ├── structure_aware_parent.py
-│   └── child_chunker.py
-├── repositories/
-│   └── parent_repository.py
-├── retrieval/
-│   └── parent_child_retriever.py
-├── embeddings/
-│   └── embedding_service.py
-├── vectorstore/
-│   └── qdrant_store.py
-├── ingestion/
-│   └── pipeline.py
-└── main.py
+│      ├── structure_detector.py
+│      ├── structure_aware_parent.py
+│      └── child_chunker.py
 │
+├── config/
+│      └── settings.py
+│
+├── embeddings/
+│      ├── embedding_service.py
+│      └── sparse_embedding_service.py
+│   
+├── models/
+│      ├── document.py
+|      |── base_chunk.py
+│      ├── parent_chunk.py
+│      ├── child_chunk.py
+│      ├── elements.py
+│      └── metadata.py
+│
+├── querying/
+│      ├── multi_query_generator.py
+│      └── query_rewriter.py
+
+├── repositories/
+│      └── parent_repository.py
+│
+├── reranking/
+│      └── cross_encoder_reranker.py
+│
+├── retrieval/
+│      ├── hyde
+│      │     ├── hyde_generator.py
+│      │     └── hyde_retriever.py
+│      ├── hybrid_child_retriever.py
+|      |── hybrid_parent_child_retriever.py
+│      ├── hybrid_rerank_mmr_retriever.py
+│      ├── mmr_parent_child_retriever.py
+│      ├── mmr_rerank_retriever.py
+│      ├── mmr_retriever.py
+|      |── multi_query_hybrid_retriever.py
+│      ├── parent_child_retriever.py
+│      ├── parent_mmr_selector.py
+│      ├── rerank_mmr_retriever_exp_1.py
+│      ├── rerank_mmr_retriever.py
+│      └── reqwritten_query_retrievar.py
+│
+├── utils/
+│      ├── document_id.py
+│      ├── hashing.py
+│      └── logging_config.py
+│
+├── vectorstore/
+│      ├── hybrid_qdrant_store.py
+│      └── qdrant_store.py
+│
+├── ingestion/
+│      ├── markdown_corpus_loader.py
+│      └── pipeline.py
+├── main.py
+│
+├── benchmarks/
+│      ├── data
+│      │     └── documents
+│      │           ├── hyde_generator.py
+│      │           └── hyde_retriever.py
+│      │     
+│      ├── data
+│      │     ├── hyde_generator.py
+│      │     └── hyde_retriever.py
+
+
+
+
+
 scripts/
 ├── test_models.py
 |── test_mongodb.py
 ├── test_parent_child_retrieval.py
-└── test_parent_chunking.py
+├── test_parent_chunking.py
 |
 tests/
 ├── test_metadata.py

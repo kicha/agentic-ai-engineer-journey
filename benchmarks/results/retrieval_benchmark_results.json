@@ -91,7 +91,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 0.5
           },
-          "latency_ms": 1088.8071000008495
+          "latency_ms": 2650.8013999991817
         },
         {
           "query": "How can I improve graph quality during index construction?",
@@ -178,7 +178,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 118.20150000130525
+          "latency_ms": 388.2614000031026
         },
         {
           "query": "Does ef_construct determine the number of HNSW layers?",
@@ -266,7 +266,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 101.48839999601478
+          "latency_ms": 130.1141000003554
         },
         {
           "query": "What does the M parameter change in HNSW?",
@@ -353,7 +353,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 71.77070000034291
+          "latency_ms": 125.55530000827275
         },
         {
           "query": "How does HNSW avoid comparing every vector?",
@@ -440,7 +440,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 87.56900000298629
+          "latency_ms": 114.19739999109879
         },
         {
           "query": "What is ef_search used for?",
@@ -527,7 +527,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 67.48659999720985
+          "latency_ms": 110.3508999949554
         },
         {
           "query": "Why might BM25 beat embeddings for uq_document_content_hash?",
@@ -615,7 +615,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 88.28790000552544
+          "latency_ms": 140.38650000293273
         },
         {
           "query": "Why shouldn't I add BM25 and cosine scores directly?",
@@ -703,7 +703,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 0.5
           },
-          "latency_ms": 75.78839999769116
+          "latency_ms": 145.71959999739192
         },
         {
           "query": "What is the difference between prefetch_k and final_k?",
@@ -790,7 +790,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 68.71720000344794
+          "latency_ms": 123.45290000666864
         },
         {
           "query": "Why should children be created from persisted parents?",
@@ -878,7 +878,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 71.58519999939017
+          "latency_ms": 99.24779999710154
         },
         {
           "query": "What is a dangling parent reference?",
@@ -967,7 +967,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 64.26379999902565
+          "latency_ms": 88.78819999517873
         },
         {
           "query": "Why rerank parents with a CrossEncoder?",
@@ -1055,7 +1055,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 67.23609999608016
+          "latency_ms": 103.6692000052426
         },
         {
           "query": "Can I treat a CrossEncoder sigmoid score as a calibrated probability?",
@@ -1142,7 +1142,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 80.47670000087237
+          "latency_ms": 140.34670000546612
         },
         {
           "query": "Why not mix CrossEncoder scores directly with cosine redundancy in MMR?",
@@ -1229,7 +1229,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 73.24510000034934
+          "latency_ms": 119.65939999208786
         },
         {
           "query": "What happens when MMR lambda is too low?",
@@ -1316,7 +1316,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 61.96720000298228
+          "latency_ms": 115.61599999549799
         },
         {
           "query": "How can headings be preserved during chunking?",
@@ -1403,7 +1403,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 64.97569999919506
+          "latency_ms": 83.18570000119507
         },
         {
           "query": "Which metadata fields are useful for filtered retrieval?",
@@ -1490,7 +1490,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 66.51250000140863
+          "latency_ms": 134.7241000039503
         },
         {
           "query": "Why use named dense and sparse vectors on one Qdrant point?",
@@ -1577,7 +1577,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 75.34970000415342
+          "latency_ms": 108.03979999036528
         },
         {
           "query": "How should unchanged Qdrant children behave on re-ingestion?",
@@ -1664,7 +1664,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 70.10670000454411
+          "latency_ms": 113.34019999776501
         },
         {
           "query": "What causes MongoDB IndexOptionsConflict?",
@@ -1751,7 +1751,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 89.06569999817293
+          "latency_ms": 102.93360000650864
         },
         {
           "query": "How many dimensions does all-MiniLM-L6-v2 produce?",
@@ -1838,7 +1838,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 87.78840000013588
+          "latency_ms": 105.6663000053959
         },
         {
           "query": "What problem does query rewriting solve?",
@@ -1925,7 +1925,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 68.0655000032857
+          "latency_ms": 110.2932000067085
         },
         {
           "query": "Why can multi-query retrieval improve recall?",
@@ -2012,7 +2012,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 76.79530000314116
+          "latency_ms": 132.35409998742398
         },
         {
           "query": "What is HyDE and why can it hallucinate?",
@@ -2099,7 +2099,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 78.4886000037659
+          "latency_ms": 140.90349999605678
         },
         {
           "query": "What is candidate parent recall?",
@@ -2186,7 +2186,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 78.81910000287462
+          "latency_ms": 112.60709998896345
         },
         {
           "query": "Why is FastAPI returning HTTP 422?",
@@ -2273,7 +2273,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 420.571700000437
+          "latency_ms": 99.54190001008101
         },
         {
           "query": "What can cause ERR_CONNECTION_REFUSED?",
@@ -2360,7 +2360,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 145.45429999998305
+          "latency_ms": 95.78559998772107
         },
         {
           "query": "How should I trace dense sparse RRF CrossEncoder and MMR scores?",
@@ -2447,7 +2447,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 148.43850000033854
+          "latency_ms": 116.26679998880718
         },
         {
           "query": "Can similarity override tenant_id authorization?",
@@ -2534,7 +2534,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 109.18870000023162
+          "latency_ms": 100.7166000053985
         },
         {
           "query": "What causes a vector dimension mismatch?",
@@ -2622,7 +2622,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 70.402200006356
+          "latency_ms": 86.76789999299217
         },
         {
           "query": "Which metrics should compare Dense Sparse and Hybrid?",
@@ -2710,7 +2710,7 @@
             "recall_at_10": 0.5,
             "reciprocal_rank": 0.5
           },
-          "latency_ms": 69.32040000538109
+          "latency_ms": 105.7446000049822
         }
       ],
       "summary": {
@@ -2722,7 +2722,7 @@
         "recall_at_5": 0.9838709677419355,
         "recall_at_10": 0.9838709677419355,
         "mrr": 0.9516129032258065,
-        "average_latency_ms": 126.00754516249928
+        "average_latency_ms": 204.67863870867257
       }
     },
     {
@@ -2785,7 +2785,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 42.13249999884283
+          "latency_ms": 41.56589999911375
         },
         {
           "query": "How can I improve graph quality during index construction?",
@@ -2872,7 +2872,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 16.435800003819168
+          "latency_ms": 23.828999997931533
         },
         {
           "query": "Does ef_construct determine the number of HNSW layers?",
@@ -2898,16 +2898,16 @@
             },
             {
               "rank": 3,
-              "document_id": "DOC-015",
+              "document_id": "DOC-002",
               "best_score": 16.944754,
-              "best_child_id": "f28205ca-208f-401e-8670-c1ab63cdf31a",
+              "best_child_id": "12fece99-bdab-4e9f-860b-44916aa160c0",
               "best_child_index": 0
             },
             {
               "rank": 4,
-              "document_id": "DOC-002",
+              "document_id": "DOC-015",
               "best_score": 16.944754,
-              "best_child_id": "7b9f4c6c-9d14-4884-8bd1-d976e6c81194",
+              "best_child_id": "f28205ca-208f-401e-8670-c1ab63cdf31a",
               "best_child_index": 0
             },
             {
@@ -2960,7 +2960,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 15.239499996823724
+          "latency_ms": 23.82469999429304
         },
         {
           "query": "What does the M parameter change in HNSW?",
@@ -3033,7 +3033,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 0.125
           },
-          "latency_ms": 14.53350000520004
+          "latency_ms": 21.464000004925765
         },
         {
           "query": "How does HNSW avoid comparing every vector?",
@@ -3079,16 +3079,16 @@
             },
             {
               "rank": 6,
-              "document_id": "DOC-017",
+              "document_id": "DOC-005",
               "best_score": 11.059803,
-              "best_child_id": "4a57a2c1-503d-4962-b654-d20b69e4584b",
+              "best_child_id": "e5534ee8-06e0-4572-96f2-18e8c9ed6b85",
               "best_child_index": 0
             },
             {
               "rank": 7,
-              "document_id": "DOC-005",
+              "document_id": "DOC-017",
               "best_score": 11.059803,
-              "best_child_id": "e5534ee8-06e0-4572-96f2-18e8c9ed6b85",
+              "best_child_id": "4a57a2c1-503d-4962-b654-d20b69e4584b",
               "best_child_index": 0
             },
             {
@@ -3120,7 +3120,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 0.5
           },
-          "latency_ms": 16.93420000083279
+          "latency_ms": 18.756800011033192
         },
         {
           "query": "What is ef_search used for?",
@@ -3159,16 +3159,16 @@
             },
             {
               "rank": 5,
-              "document_id": "DOC-020",
+              "document_id": "DOC-019",
               "best_score": 6.96959,
-              "best_child_id": "f33f504a-c294-446e-8dcf-655a57699e9b",
+              "best_child_id": "5c453ea5-1571-4412-945f-358aaf000f38",
               "best_child_index": 1
             },
             {
               "rank": 6,
-              "document_id": "DOC-019",
+              "document_id": "DOC-020",
               "best_score": 6.96959,
-              "best_child_id": "5c453ea5-1571-4412-945f-358aaf000f38",
+              "best_child_id": "f33f504a-c294-446e-8dcf-655a57699e9b",
               "best_child_index": 1
             },
             {
@@ -3194,9 +3194,9 @@
             },
             {
               "rank": 10,
-              "document_id": "DOC-004",
+              "document_id": "DOC-016",
               "best_score": 6.841801,
-              "best_child_id": "ad44b418-3417-4249-ac1a-e54a892059fb",
+              "best_child_id": "939e38fa-c7bc-4c13-be39-b2b40edf5ddf",
               "best_child_index": 0
             }
           ],
@@ -3207,7 +3207,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 0.5
           },
-          "latency_ms": 16.102699999464676
+          "latency_ms": 19.665499989059754
         },
         {
           "query": "Why might BM25 beat embeddings for uq_document_content_hash?",
@@ -3295,7 +3295,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 16.581800002313685
+          "latency_ms": 20.607600003131665
         },
         {
           "query": "Why shouldn't I add BM25 and cosine scores directly?",
@@ -3383,7 +3383,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 0.3333333333333333
           },
-          "latency_ms": 22.756099999241997
+          "latency_ms": 15.497900007176213
         },
         {
           "query": "What is the difference between prefetch_k and final_k?",
@@ -3415,17 +3415,17 @@
             },
             {
               "rank": 4,
-              "document_id": "DOC-021",
-              "best_score": 8.671256,
-              "best_child_id": "7d91fac1-4cf0-4860-9d17-af39ba2d9228",
-              "best_child_index": 0
-            },
-            {
-              "rank": 5,
               "document_id": "DOC-003",
               "best_score": 8.671256,
               "best_child_id": "5eca3877-eeda-470a-9889-a7be99de2cf5",
               "best_child_index": 1
+            },
+            {
+              "rank": 5,
+              "document_id": "DOC-021",
+              "best_score": 8.671256,
+              "best_child_id": "7d91fac1-4cf0-4860-9d17-af39ba2d9228",
+              "best_child_index": 0
             },
             {
               "rank": 6,
@@ -3449,7 +3449,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 19.325499997648876
+          "latency_ms": 14.06640000641346
         },
         {
           "query": "Why should children be created from persisted parents?",
@@ -3537,7 +3537,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 20.070600003236905
+          "latency_ms": 16.03179999801796
         },
         {
           "query": "What is a dangling parent reference?",
@@ -3619,7 +3619,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 16.6289000044344
+          "latency_ms": 15.626699998392724
         },
         {
           "query": "Why rerank parents with a CrossEncoder?",
@@ -3707,7 +3707,7 @@
             "recall_at_10": 0.5,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 17.077399999834597
+          "latency_ms": 23.453799993149005
         },
         {
           "query": "Can I treat a CrossEncoder sigmoid score as a calibrated probability?",
@@ -3780,7 +3780,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 15.575199999148026
+          "latency_ms": 75.05169999785721
         },
         {
           "query": "Why not mix CrossEncoder scores directly with cosine redundancy in MMR?",
@@ -3860,7 +3860,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 14.308000005257782
+          "latency_ms": 23.46320000651758
         },
         {
           "query": "What happens when MMR lambda is too low?",
@@ -3880,7 +3880,7 @@
               "rank": 2,
               "document_id": "DOC-023",
               "best_score": 10.316644,
-              "best_child_id": "9a12a7a8-9be9-4bdf-9f81-7ba9bc149594",
+              "best_child_id": "0e306142-57a2-4da7-b0aa-7c97bc54e54d",
               "best_child_index": 0
             },
             {
@@ -3905,7 +3905,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 14.132600001175888
+          "latency_ms": 16.632200000458397
         },
         {
           "query": "How can headings be preserved during chunking?",
@@ -3978,7 +3978,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 17.48300000326708
+          "latency_ms": 18.807300002663396
         },
         {
           "query": "Which metadata fields are useful for filtered retrieval?",
@@ -4065,7 +4065,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 21.768799997516908
+          "latency_ms": 22.612600005231798
         },
         {
           "query": "Why use named dense and sparse vectors on one Qdrant point?",
@@ -4118,16 +4118,16 @@
             },
             {
               "rank": 7,
-              "document_id": "DOC-003",
+              "document_id": "DOC-016",
               "best_score": 14.220085,
-              "best_child_id": "9225fdcc-5dca-4ed7-8164-d7b500d2ccd0",
+              "best_child_id": "481d57c3-db0a-40b3-a285-51154189b06e",
               "best_child_index": 0
             },
             {
               "rank": 8,
-              "document_id": "DOC-016",
+              "document_id": "DOC-003",
               "best_score": 14.220085,
-              "best_child_id": "481d57c3-db0a-40b3-a285-51154189b06e",
+              "best_child_id": "9225fdcc-5dca-4ed7-8164-d7b500d2ccd0",
               "best_child_index": 0
             },
             {
@@ -4152,7 +4152,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 17.094400005589705
+          "latency_ms": 18.163300002925098
         },
         {
           "query": "How should unchanged Qdrant children behave on re-ingestion?",
@@ -4232,7 +4232,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 11.84330000251066
+          "latency_ms": 18.567300008726306
         },
         {
           "query": "What causes MongoDB IndexOptionsConflict?",
@@ -4277,7 +4277,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 15.738299996883143
+          "latency_ms": 13.862599997082725
         },
         {
           "query": "How many dimensions does all-MiniLM-L6-v2 produce?",
@@ -4329,7 +4329,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 14.441499995882623
+          "latency_ms": 13.57300000381656
         },
         {
           "query": "What problem does query rewriting solve?",
@@ -4416,7 +4416,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 0.5
           },
-          "latency_ms": 14.86309999745572
+          "latency_ms": 18.911899998784065
         },
         {
           "query": "Why can multi-query retrieval improve recall?",
@@ -4469,16 +4469,16 @@
             },
             {
               "rank": 7,
-              "document_id": "DOC-005",
+              "document_id": "DOC-015",
               "best_score": 11.168884,
-              "best_child_id": "583b0290-587c-4568-b93b-42450b5bf20a",
+              "best_child_id": "f7b91f08-2d01-46e0-b5a0-23e4bf240210",
               "best_child_index": 0
             },
             {
               "rank": 8,
-              "document_id": "DOC-015",
+              "document_id": "DOC-005",
               "best_score": 11.168884,
-              "best_child_id": "f7b91f08-2d01-46e0-b5a0-23e4bf240210",
+              "best_child_id": "583b0290-587c-4568-b93b-42450b5bf20a",
               "best_child_index": 0
             },
             {
@@ -4503,7 +4503,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 21.183500000915956
+          "latency_ms": 18.66009998775553
         },
         {
           "query": "What is HyDE and why can it hallucinate?",
@@ -4527,7 +4527,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 9.401199997228105
+          "latency_ms": 14.561499992851168
         },
         {
           "query": "What is candidate parent recall?",
@@ -4575,7 +4575,7 @@
               "rank": 6,
               "document_id": "DOC-001",
               "best_score": 7.2167883,
-              "best_child_id": "09df2bf4-24e5-4875-bfbe-8a75873ffe83",
+              "best_child_id": "6b0288d1-ed69-427f-97df-264941d8abeb",
               "best_child_index": 1
             },
             {
@@ -4614,7 +4614,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 18.26489999803016
+          "latency_ms": 26.680399998440407
         },
         {
           "query": "Why is FastAPI returning HTTP 422?",
@@ -4666,7 +4666,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 14.013600004545879
+          "latency_ms": 15.524399990681559
         },
         {
           "query": "What can cause ERR_CONNECTION_REFUSED?",
@@ -4697,7 +4697,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 0.5
           },
-          "latency_ms": 39.179699997475836
+          "latency_ms": 20.896999994874932
         },
         {
           "query": "How should I trace dense sparse RRF CrossEncoder and MMR scores?",
@@ -4784,7 +4784,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 13.714800006709993
+          "latency_ms": 17.608199996175244
         },
         {
           "query": "Can similarity override tenant_id authorization?",
@@ -4850,7 +4850,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 15.3372999993735
+          "latency_ms": 21.901800006162375
         },
         {
           "query": "What causes a vector dimension mismatch?",
@@ -4925,9 +4925,9 @@
             },
             {
               "rank": 10,
-              "document_id": "DOC-003",
+              "document_id": "DOC-016",
               "best_score": 6.805192,
-              "best_child_id": "9225fdcc-5dca-4ed7-8164-d7b500d2ccd0",
+              "best_child_id": "481d57c3-db0a-40b3-a285-51154189b06e",
               "best_child_index": 0
             }
           ],
@@ -4938,7 +4938,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 0.5
           },
-          "latency_ms": 17.605000000912696
+          "latency_ms": 71.04619999881834
         },
         {
           "query": "Which metrics should compare Dense Sparse and Hybrid?",
@@ -5026,7 +5026,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 14.535200003592763
+          "latency_ms": 14.818499999819323
         }
       ],
       "summary": {
@@ -5038,7 +5038,7 @@
         "recall_at_5": 0.9193548387096774,
         "recall_at_10": 0.9838709677419355,
         "mrr": 0.8696236559139785,
-        "average_latency_ms": 17.880706452424715
+        "average_latency_ms": 23.088170967492907
       }
     },
     {
@@ -5115,7 +5115,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 83.2525000005262
+          "latency_ms": 106.96319999988191
         },
         {
           "query": "How can I improve graph quality during index construction?",
@@ -5141,7 +5141,7 @@
             {
               "rank": 3,
               "document_id": "DOC-003",
-              "best_score": 0.225,
+              "best_score": 0.2361111,
               "best_child_id": "5eca3877-eeda-470a-9889-a7be99de2cf5",
               "best_child_index": 1
             },
@@ -5168,16 +5168,16 @@
             },
             {
               "rank": 7,
-              "document_id": "DOC-006",
+              "document_id": "DOC-016",
               "best_score": 0.083333336,
-              "best_child_id": "1e9f22d8-a5fc-4e70-96bf-11ebe24af22f",
+              "best_child_id": "481d57c3-db0a-40b3-a285-51154189b06e",
               "best_child_index": 0
             },
             {
               "rank": 8,
-              "document_id": "DOC-016",
+              "document_id": "DOC-006",
               "best_score": 0.083333336,
-              "best_child_id": "481d57c3-db0a-40b3-a285-51154189b06e",
+              "best_child_id": "1e9f22d8-a5fc-4e70-96bf-11ebe24af22f",
               "best_child_index": 0
             }
           ],
@@ -5188,7 +5188,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 62.31349999870872
+          "latency_ms": 136.01659999403637
         },
         {
           "query": "Does ef_construct determine the number of HNSW layers?",
@@ -5222,7 +5222,7 @@
             {
               "rank": 4,
               "document_id": "DOC-015",
-              "best_score": 0.35,
+              "best_score": 0.3,
               "best_child_id": "f28205ca-208f-401e-8670-c1ab63cdf31a",
               "best_child_index": 0
             },
@@ -5257,7 +5257,7 @@
             {
               "rank": 9,
               "document_id": "DOC-016",
-              "best_score": 0.06666667,
+              "best_score": 0.0625,
               "best_child_id": "3528c3d0-4612-45ff-88cd-1b4a0072419a",
               "best_child_index": 1
             }
@@ -5269,7 +5269,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 70.96440000168514
+          "latency_ms": 104.28720001073088
         },
         {
           "query": "What does the M parameter change in HNSW?",
@@ -5349,7 +5349,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 0.5
           },
-          "latency_ms": 67.08690000232309
+          "latency_ms": 104.63919999892823
         },
         {
           "query": "How does HNSW avoid comparing every vector?",
@@ -5383,8 +5383,8 @@
               "rank": 4,
               "document_id": "DOC-009",
               "best_score": 0.25,
-              "best_child_id": "26761310-f867-45dd-8294-c5c58192efe9",
-              "best_child_index": 0
+              "best_child_id": "08c9bddf-2aa7-426c-b9fc-86a1ce6ebe6b",
+              "best_child_index": 1
             },
             {
               "rank": 5,
@@ -5402,23 +5402,23 @@
             },
             {
               "rank": 7,
-              "document_id": "DOC-017",
+              "document_id": "DOC-005",
               "best_score": 0.1,
-              "best_child_id": "4a57a2c1-503d-4962-b654-d20b69e4584b",
+              "best_child_id": "e5534ee8-06e0-4572-96f2-18e8c9ed6b85",
               "best_child_index": 0
             },
             {
               "rank": 8,
-              "document_id": "DOC-011",
+              "document_id": "DOC-017",
               "best_score": 0.09090909,
-              "best_child_id": "89cd3e91-4504-467c-9282-8348218d9b11",
+              "best_child_id": "4a57a2c1-503d-4962-b654-d20b69e4584b",
               "best_child_index": 0
             },
             {
               "rank": 9,
-              "document_id": "DOC-005",
+              "document_id": "DOC-011",
               "best_score": 0.09090909,
-              "best_child_id": "e5534ee8-06e0-4572-96f2-18e8c9ed6b85",
+              "best_child_id": "89cd3e91-4504-467c-9282-8348218d9b11",
               "best_child_index": 0
             },
             {
@@ -5436,7 +5436,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 0.5
           },
-          "latency_ms": 60.277600001427345
+          "latency_ms": 96.24829998938367
         },
         {
           "query": "What is ef_search used for?",
@@ -5482,23 +5482,23 @@
             },
             {
               "rank": 6,
-              "document_id": "DOC-020",
-              "best_score": 0.14285715,
-              "best_child_id": "f33f504a-c294-446e-8dcf-655a57699e9b",
-              "best_child_index": 1
-            },
-            {
-              "rank": 7,
               "document_id": "DOC-019",
-              "best_score": 0.13942307,
+              "best_score": 0.15384616,
               "best_child_id": "1cecdbb4-fd9e-4130-a72b-366653cca040",
               "best_child_index": 0
             },
             {
-              "rank": 8,
+              "rank": 7,
               "document_id": "DOC-009",
               "best_score": 0.125,
               "best_child_id": "08c9bddf-2aa7-426c-b9fc-86a1ce6ebe6b",
+              "best_child_index": 1
+            },
+            {
+              "rank": 8,
+              "document_id": "DOC-020",
+              "best_score": 0.125,
+              "best_child_id": "f33f504a-c294-446e-8dcf-655a57699e9b",
               "best_child_index": 1
             },
             {
@@ -5510,9 +5510,9 @@
             },
             {
               "rank": 10,
-              "document_id": "DOC-010",
+              "document_id": "DOC-004",
               "best_score": 0.09090909,
-              "best_child_id": "2f0d97c8-9b1e-48aa-995d-6ace9adfc25a",
+              "best_child_id": "88b59690-6561-4082-a225-cf715674c06d",
               "best_child_index": 0
             }
           ],
@@ -5523,7 +5523,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 0.5
           },
-          "latency_ms": 65.677799997502
+          "latency_ms": 97.7028000052087
         },
         {
           "query": "Why might BM25 beat embeddings for uq_document_content_hash?",
@@ -5543,7 +5543,7 @@
             {
               "rank": 2,
               "document_id": "DOC-004",
-              "best_score": 0.75,
+              "best_score": 0.8333334,
               "best_child_id": "88b59690-6561-4082-a225-cf715674c06d",
               "best_child_index": 0
             },
@@ -5557,7 +5557,7 @@
             {
               "rank": 4,
               "document_id": "DOC-017",
-              "best_score": 0.21111111,
+              "best_score": 0.22222222,
               "best_child_id": "b56e4f1b-a8e7-45c1-829a-fefaffa6d125",
               "best_child_index": 1
             },
@@ -5577,31 +5577,31 @@
             },
             {
               "rank": 7,
+              "document_id": "DOC-023",
+              "best_score": 0.1625,
+              "best_child_id": "0e306142-57a2-4da7-b0aa-7c97bc54e54d",
+              "best_child_index": 0
+            },
+            {
+              "rank": 8,
               "document_id": "DOC-008",
               "best_score": 0.14835165,
               "best_child_id": "24133776-f50a-4d98-a0ce-1936698c0842",
               "best_child_index": 0
             },
             {
-              "rank": 8,
+              "rank": 9,
               "document_id": "DOC-005",
               "best_score": 0.14285715,
               "best_child_id": "2bc0aabc-e07a-4c0f-b9b0-4b29f9bd03c1",
               "best_child_index": 0
             },
             {
-              "rank": 9,
+              "rank": 10,
               "document_id": "DOC-007",
-              "best_score": 0.11111111,
+              "best_score": 0.1,
               "best_child_id": "02e25c56-9ff3-4e68-bded-1ced0baff6e2",
               "best_child_index": 1
-            },
-            {
-              "rank": 10,
-              "document_id": "DOC-023",
-              "best_score": 0.1,
-              "best_child_id": "0e306142-57a2-4da7-b0aa-7c97bc54e54d",
-              "best_child_index": 0
             }
           ],
           "metrics": {
@@ -5611,7 +5611,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 103.40970000106608
+          "latency_ms": 110.12379999738187
         },
         {
           "query": "Why shouldn't I add BM25 and cosine scores directly?",
@@ -5679,16 +5679,16 @@
             },
             {
               "rank": 9,
-              "document_id": "DOC-017",
+              "document_id": "DOC-001",
               "best_score": 0.125,
-              "best_child_id": "4a57a2c1-503d-4962-b654-d20b69e4584b",
+              "best_child_id": "1a3317f0-71b3-4d27-a1b8-633d5d5ed11c",
               "best_child_index": 0
             },
             {
               "rank": 10,
-              "document_id": "DOC-001",
+              "document_id": "DOC-017",
               "best_score": 0.125,
-              "best_child_id": "1a3317f0-71b3-4d27-a1b8-633d5d5ed11c",
+              "best_child_id": "4a57a2c1-503d-4962-b654-d20b69e4584b",
               "best_child_index": 0
             }
           ],
@@ -5699,7 +5699,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 0.5
           },
-          "latency_ms": 79.54819999577012
+          "latency_ms": 109.5330000098329
         },
         {
           "query": "What is the difference between prefetch_k and final_k?",
@@ -5724,58 +5724,58 @@
             },
             {
               "rank": 3,
-              "document_id": "DOC-001",
-              "best_score": 0.25,
-              "best_child_id": "1a3317f0-71b3-4d27-a1b8-633d5d5ed11c",
-              "best_child_index": 0
-            },
-            {
-              "rank": 4,
               "document_id": "DOC-006",
               "best_score": 0.25,
               "best_child_id": "36fd30d6-5e79-49c7-8696-3da54b2233ee",
               "best_child_index": 1
             },
             {
+              "rank": 4,
+              "document_id": "DOC-001",
+              "best_score": 0.25,
+              "best_child_id": "1a3317f0-71b3-4d27-a1b8-633d5d5ed11c",
+              "best_child_index": 0
+            },
+            {
               "rank": 5,
+              "document_id": "DOC-003",
+              "best_score": 0.2,
+              "best_child_id": "5eca3877-eeda-470a-9889-a7be99de2cf5",
+              "best_child_index": 1
+            },
+            {
+              "rank": 6,
               "document_id": "DOC-024",
               "best_score": 0.2,
               "best_child_id": "59e010d2-fcf0-4b14-8e99-bf6fb549a245",
               "best_child_index": 0
             },
             {
-              "rank": 6,
+              "rank": 7,
               "document_id": "DOC-021",
-              "best_score": 0.2,
+              "best_score": 0.16666667,
               "best_child_id": "7d91fac1-4cf0-4860-9d17-af39ba2d9228",
               "best_child_index": 0
             },
             {
-              "rank": 7,
+              "rank": 8,
               "document_id": "DOC-014",
               "best_score": 0.14285715,
               "best_child_id": "c52ff67c-78c0-4ebc-a8c1-883cc987a592",
               "best_child_index": 1
             },
             {
-              "rank": 8,
-              "document_id": "DOC-003",
-              "best_score": 0.14285715,
-              "best_child_id": "5eca3877-eeda-470a-9889-a7be99de2cf5",
-              "best_child_index": 1
-            },
-            {
               "rank": 9,
-              "document_id": "DOC-017",
+              "document_id": "DOC-016",
               "best_score": 0.125,
-              "best_child_id": "309eec3e-eb25-40d8-9b2a-7dd0306f7613",
+              "best_child_id": "939e38fa-c7bc-4c13-be39-b2b40edf5ddf",
               "best_child_index": 0
             },
             {
               "rank": 10,
-              "document_id": "DOC-002",
-              "best_score": 0.11111111,
-              "best_child_id": "6e49e8d2-a7d1-4fc9-b238-290029fcd33d",
+              "document_id": "DOC-017",
+              "best_score": 0.125,
+              "best_child_id": "309eec3e-eb25-40d8-9b2a-7dd0306f7613",
               "best_child_index": 0
             }
           ],
@@ -5786,7 +5786,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 90.22089999780292
+          "latency_ms": 109.52010001346935
         },
         {
           "query": "Why should children be created from persisted parents?",
@@ -5842,8 +5842,8 @@
               "rank": 7,
               "document_id": "DOC-018",
               "best_score": 0.071428575,
-              "best_child_id": "c8e01a0e-b1b4-4c1a-a542-1c2ca72fcc96",
-              "best_child_index": 0
+              "best_child_id": "80d92906-1c7b-4f1d-9906-c71382e55ec7",
+              "best_child_index": 1
             },
             {
               "rank": 8,
@@ -5867,7 +5867,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 69.50880000658799
+          "latency_ms": 94.872799993027
         },
         {
           "query": "What is a dangling parent reference?",
@@ -5942,7 +5942,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 76.34260000486393
+          "latency_ms": 93.01810000033583
         },
         {
           "query": "Why rerank parents with a CrossEncoder?",
@@ -5982,16 +5982,16 @@
             },
             {
               "rank": 5,
-              "document_id": "DOC-021",
-              "best_score": 0.19090909,
-              "best_child_id": "af71995d-cd91-44d2-999e-22edfbd7519e",
+              "document_id": "DOC-023",
+              "best_score": 0.22916667,
+              "best_child_id": "a877f7bb-c706-49ad-8a5a-153a108c2afd",
               "best_child_index": 1
             },
             {
               "rank": 6,
-              "document_id": "DOC-023",
-              "best_score": 0.16666667,
-              "best_child_id": "a877f7bb-c706-49ad-8a5a-153a108c2afd",
+              "document_id": "DOC-021",
+              "best_score": 0.19090909,
+              "best_child_id": "af71995d-cd91-44d2-999e-22edfbd7519e",
               "best_child_index": 1
             },
             {
@@ -6030,7 +6030,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 77.55190000170842
+          "latency_ms": 102.32809999433812
         },
         {
           "query": "Can I treat a CrossEncoder sigmoid score as a calibrated probability?",
@@ -6110,7 +6110,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 76.14769999781856
+          "latency_ms": 108.54659999313299
         },
         {
           "query": "Why not mix CrossEncoder scores directly with cosine redundancy in MMR?",
@@ -6183,7 +6183,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 77.36799999838695
+          "latency_ms": 110.09700001159217
         },
         {
           "query": "What happens when MMR lambda is too low?",
@@ -6196,13 +6196,13 @@
               "rank": 1,
               "document_id": "DOC-008",
               "best_score": 0.8333334,
-              "best_child_id": "d0ae5019-f08c-4cf7-896f-5dc175ee2b1e",
+              "best_child_id": "2d0093ed-c0a1-4ae9-8a76-2f9425f6b874",
               "best_child_index": 0
             },
             {
               "rank": 2,
               "document_id": "DOC-023",
-              "best_score": 0.26785713,
+              "best_score": 0.2916667,
               "best_child_id": "0e306142-57a2-4da7-b0aa-7c97bc54e54d",
               "best_child_index": 0
             },
@@ -6242,7 +6242,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 58.422000001883134
+          "latency_ms": 109.30409999855328
         },
         {
           "query": "How can headings be preserved during chunking?",
@@ -6309,17 +6309,17 @@
             },
             {
               "rank": 9,
-              "document_id": "DOC-017",
-              "best_score": 0.09090909,
-              "best_child_id": "b56e4f1b-a8e7-45c1-829a-fefaffa6d125",
-              "best_child_index": 1
-            },
-            {
-              "rank": 10,
               "document_id": "DOC-013",
               "best_score": 0.09090909,
               "best_child_id": "8196ddd2-5f52-463a-ac3d-9c2f0a3d5496",
               "best_child_index": 0
+            },
+            {
+              "rank": 10,
+              "document_id": "DOC-017",
+              "best_score": 0.09090909,
+              "best_child_id": "b56e4f1b-a8e7-45c1-829a-fefaffa6d125",
+              "best_child_index": 1
             }
           ],
           "metrics": {
@@ -6329,7 +6329,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 63.91609999991488
+          "latency_ms": 92.20470000582282
         },
         {
           "query": "Which metadata fields are useful for filtered retrieval?",
@@ -6375,17 +6375,17 @@
             },
             {
               "rank": 6,
-              "document_id": "DOC-004",
-              "best_score": 0.11111111,
-              "best_child_id": "312a7ed2-7fe1-4d9b-8d49-382c3425de29",
-              "best_child_index": 1
-            },
-            {
-              "rank": 7,
               "document_id": "DOC-007",
               "best_score": 0.11111111,
               "best_child_id": "3dcfbec1-e672-4951-8cb1-e5dc5af27334",
               "best_child_index": 0
+            },
+            {
+              "rank": 7,
+              "document_id": "DOC-004",
+              "best_score": 0.11111111,
+              "best_child_id": "312a7ed2-7fe1-4d9b-8d49-382c3425de29",
+              "best_child_index": 1
             },
             {
               "rank": 8,
@@ -6416,7 +6416,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 87.5238000007812
+          "latency_ms": 95.24920000694692
         },
         {
           "query": "Why use named dense and sparse vectors on one Qdrant point?",
@@ -6456,14 +6456,14 @@
             {
               "rank": 5,
               "document_id": "DOC-003",
-              "best_score": 0.19444445,
+              "best_score": 0.18803419,
               "best_child_id": "9225fdcc-5dca-4ed7-8164-d7b500d2ccd0",
               "best_child_index": 0
             },
             {
               "rank": 6,
               "document_id": "DOC-016",
-              "best_score": 0.16025642,
+              "best_score": 0.16666667,
               "best_child_id": "481d57c3-db0a-40b3-a285-51154189b06e",
               "best_child_index": 0
             },
@@ -6503,7 +6503,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 62.48380000033649
+          "latency_ms": 100.14520000549965
         },
         {
           "query": "How should unchanged Qdrant children behave on re-ingestion?",
@@ -6529,7 +6529,7 @@
             {
               "rank": 3,
               "document_id": "DOC-023",
-              "best_score": 0.25,
+              "best_score": 0.3125,
               "best_child_id": "297e690f-0acb-44ba-ba61-04f08aa0fb09",
               "best_child_index": 0
             },
@@ -6583,7 +6583,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 66.47430000157328
+          "latency_ms": 129.13299999490846
         },
         {
           "query": "What causes MongoDB IndexOptionsConflict?",
@@ -6670,7 +6670,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 60.14100000174949
+          "latency_ms": 97.75620000436902
         },
         {
           "query": "How many dimensions does all-MiniLM-L6-v2 produce?",
@@ -6757,7 +6757,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 63.168799999402836
+          "latency_ms": 104.4088000053307
         },
         {
           "query": "What problem does query rewriting solve?",
@@ -6783,36 +6783,36 @@
             {
               "rank": 3,
               "document_id": "DOC-007",
-              "best_score": 0.225,
+              "best_score": 0.20833334,
               "best_child_id": "4e3a10b2-a2d0-4e14-ab85-93564c7fce18",
               "best_child_index": 1
             },
             {
               "rank": 4,
-              "document_id": "DOC-018",
-              "best_score": 0.2020202,
-              "best_child_id": "fe3984fc-6536-46a4-882d-086849c973e8",
-              "best_child_index": 1
-            },
-            {
-              "rank": 5,
               "document_id": "DOC-016",
               "best_score": 0.2020202,
               "best_child_id": "715b1b11-bcfd-4067-8457-cb0fce5af969",
               "best_child_index": 0
             },
             {
+              "rank": 5,
+              "document_id": "DOC-018",
+              "best_score": 0.2020202,
+              "best_child_id": "fe3984fc-6536-46a4-882d-086849c973e8",
+              "best_child_index": 1
+            },
+            {
               "rank": 6,
-              "document_id": "DOC-003",
+              "document_id": "DOC-001",
               "best_score": 0.2,
-              "best_child_id": "5eca3877-eeda-470a-9889-a7be99de2cf5",
+              "best_child_id": "07869d0e-1126-4ab0-ab41-6557eb0b6ab0",
               "best_child_index": 1
             },
             {
               "rank": 7,
-              "document_id": "DOC-001",
-              "best_score": 0.18333334,
-              "best_child_id": "07869d0e-1126-4ab0-ab41-6557eb0b6ab0",
+              "document_id": "DOC-003",
+              "best_score": 0.2,
+              "best_child_id": "5eca3877-eeda-470a-9889-a7be99de2cf5",
               "best_child_index": 1
             },
             {
@@ -6844,7 +6844,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 58.86100000498118
+          "latency_ms": 89.63119999680202
         },
         {
           "query": "Why can multi-query retrieval improve recall?",
@@ -6877,7 +6877,7 @@
             {
               "rank": 4,
               "document_id": "DOC-005",
-              "best_score": 0.2159091,
+              "best_score": 0.20833334,
               "best_child_id": "583b0290-587c-4568-b93b-42450b5bf20a",
               "best_child_index": 0
             },
@@ -6931,7 +6931,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 64.05970000196248
+          "latency_ms": 99.35470001073554
         },
         {
           "query": "What is HyDE and why can it hallucinate?",
@@ -7018,7 +7018,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 60.72950000088895
+          "latency_ms": 88.37440000206698
         },
         {
           "query": "What is candidate parent recall?",
@@ -7071,16 +7071,16 @@
             },
             {
               "rank": 7,
-              "document_id": "DOC-006",
+              "document_id": "DOC-001",
               "best_score": 0.125,
-              "best_child_id": "9f1420c1-6fc5-48e5-887f-bd78f8813f5f",
+              "best_child_id": "6b0288d1-ed69-427f-97df-264941d8abeb",
               "best_child_index": 1
             },
             {
               "rank": 8,
-              "document_id": "DOC-001",
+              "document_id": "DOC-006",
               "best_score": 0.125,
-              "best_child_id": "6b0288d1-ed69-427f-97df-264941d8abeb",
+              "best_child_id": "9f1420c1-6fc5-48e5-887f-bd78f8813f5f",
               "best_child_index": 1
             },
             {
@@ -7105,7 +7105,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 56.66180000116583
+          "latency_ms": 254.9122000054922
         },
         {
           "query": "Why is FastAPI returning HTTP 422?",
@@ -7185,7 +7185,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 61.69029999728082
+          "latency_ms": 150.7807000016328
         },
         {
           "query": "What can cause ERR_CONNECTION_REFUSED?",
@@ -7251,7 +7251,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 66.93329999689013
+          "latency_ms": 196.0757999913767
         },
         {
           "query": "How should I trace dense sparse RRF CrossEncoder and MMR scores?",
@@ -7331,7 +7331,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 66.67100000049686
+          "latency_ms": 175.5128000077093
         },
         {
           "query": "Can similarity override tenant_id authorization?",
@@ -7342,22 +7342,22 @@
           "retrieved_documents": [
             {
               "rank": 1,
+              "document_id": "DOC-022",
+              "best_score": 0.6666667,
+              "best_child_id": "5527f208-3da0-4105-ab54-762ad0d4b9ce",
+              "best_child_index": 0
+            },
+            {
+              "rank": 2,
               "document_id": "DOC-010",
               "best_score": 0.6666667,
               "best_child_id": "8d3f2e19-a8f2-45b0-9b9a-a9455f04cc1f",
               "best_child_index": 0
             },
             {
-              "rank": 2,
-              "document_id": "DOC-022",
-              "best_score": 0.6666667,
-              "best_child_id": "89e2113b-df9e-4437-b061-3030cc4b7fdd",
-              "best_child_index": 0
-            },
-            {
               "rank": 3,
               "document_id": "DOC-004",
-              "best_score": 0.36666667,
+              "best_score": 0.34285715,
               "best_child_id": "88b59690-6561-4082-a225-cf715674c06d",
               "best_child_index": 0
             },
@@ -7384,17 +7384,17 @@
             },
             {
               "rank": 7,
-              "document_id": "DOC-006",
-              "best_score": 0.125,
-              "best_child_id": "36fd30d6-5e79-49c7-8696-3da54b2233ee",
-              "best_child_index": 1
-            },
-            {
-              "rank": 8,
               "document_id": "DOC-021",
               "best_score": 0.125,
               "best_child_id": "7d91fac1-4cf0-4860-9d17-af39ba2d9228",
               "best_child_index": 0
+            },
+            {
+              "rank": 8,
+              "document_id": "DOC-006",
+              "best_score": 0.125,
+              "best_child_id": "36fd30d6-5e79-49c7-8696-3da54b2233ee",
+              "best_child_index": 1
             },
             {
               "rank": 9,
@@ -7416,9 +7416,9 @@
             "hit_at_10": 1.0,
             "recall_at_5": 1.0,
             "recall_at_10": 1.0,
-            "reciprocal_rank": 0.5
+            "reciprocal_rank": 1.0
           },
-          "latency_ms": 63.29330000153277
+          "latency_ms": 102.26010000042152
         },
         {
           "query": "What causes a vector dimension mismatch?",
@@ -7430,16 +7430,16 @@
           "retrieved_documents": [
             {
               "rank": 1,
-              "document_id": "DOC-023",
-              "best_score": 0.8333334,
-              "best_child_id": "6deb41bb-cc58-470c-88dd-1ef32fe0a67b",
+              "document_id": "DOC-011",
+              "best_score": 0.75,
+              "best_child_id": "89cd3e91-4504-467c-9282-8348218d9b11",
               "best_child_index": 0
             },
             {
               "rank": 2,
-              "document_id": "DOC-011",
+              "document_id": "DOC-023",
               "best_score": 0.75,
-              "best_child_id": "89cd3e91-4504-467c-9282-8348218d9b11",
+              "best_child_id": "6deb41bb-cc58-470c-88dd-1ef32fe0a67b",
               "best_child_index": 0
             },
             {
@@ -7487,7 +7487,7 @@
             {
               "rank": 9,
               "document_id": "DOC-003",
-              "best_score": 0.15,
+              "best_score": 0.16025642,
               "best_child_id": "9225fdcc-5dca-4ed7-8164-d7b500d2ccd0",
               "best_child_index": 0
             },
@@ -7504,9 +7504,9 @@
             "hit_at_10": 1.0,
             "recall_at_5": 1.0,
             "recall_at_10": 1.0,
-            "reciprocal_rank": 1.0
+            "reciprocal_rank": 0.5
           },
-          "latency_ms": 61.47179999970831
+          "latency_ms": 103.12660000636242
         },
         {
           "query": "Which metrics should compare Dense Sparse and Hybrid?",
@@ -7594,7 +7594,7 @@
             "recall_at_10": 1.0,
             "reciprocal_rank": 1.0
           },
-          "latency_ms": 59.16379999689525
+          "latency_ms": 115.18799999612384
         }
       ],
       "summary": {
@@ -7606,7 +7606,7 @@
         "recall_at_5": 0.967741935483871,
         "recall_at_10": 1.0,
         "mrr": 0.9193548387096774,
-        "average_latency_ms": 69.07534838753617
+        "average_latency_ms": 115.71982258230433
       }
     }
   ]

@@ -11,6 +11,9 @@ from benchmarks.paths import (
     BENCHMARK_MANIFEST_PATH,
     GOLD_QUERIES_PATH,
 )
+from benchmarks.utils.corpus_fingerprint import (
+    compute_corpus_sha256,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -107,7 +110,8 @@ def main() -> None:
         gold_query_count=(load_gold_query_count()),
         total_characters=(total_characters),
         approx_words=(total_words),
-        corpus_sha256=(corpus_hasher.hexdigest()),
+        # corpus_sha256=(corpus_hasher.hexdigest()),
+        corpus_sha256=compute_corpus_sha256(BENCHMARK_DOCUMENTS_DIR),
         documents=(document_entries),
     )
 
