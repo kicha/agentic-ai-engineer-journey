@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import Optional
-
+from typing import Literal
 from pydantic import BaseModel, Field, model_validator
 
 # ============================================================
@@ -213,9 +213,14 @@ class GoldQueryV2(BaseModel):
     def document_relevance_map(
         self,
     ) -> dict[str, int]:
+        """
+        Return document-level graded relevance keyed by document_id.
+
+        Judgments with no relevance grade are ignored.
+        """
 
         return {
-            judgment.document_id: (int(judgment.relevance))
+            judgment.document_id: int(judgment.relevance)
             for judgment in self.document_judgments
             if judgment.relevance is not None
         }
@@ -223,20 +228,49 @@ class GoldQueryV2(BaseModel):
     def parent_relevance_map(
         self,
     ) -> dict[str, int]:
+        """
+        Return parent-level graded relevance keyed by parent_key.
+        """
 
         return {
-            judgment.parent_key: (int(judgment.relevance))
+            judgment.parent_key: int(judgment.relevance)
             for judgment in self.parent_judgments
         }
 
     def child_relevance_map(
         self,
     ) -> dict[str, int]:
+        """
+        Return child-level graded relevance keyed by child_key.
+        """
 
         return {
-            judgment.child_key: (int(judgment.relevance))
+            judgment.child_key: int(judgment.relevance)
             for judgment in self.child_judgments
         }
+
+    def relevance_map(
+        self,
+        level: Literal[
+            "document",
+            "parent",
+            "child",
+        ],
+    ) -> dict[str, int]:
+        """
+        Return graded relevance for the requested retrieval level.
+        """
+
+        if level == "document":
+            return self.document_relevance_map()
+
+        if level == "parent":
+            return self.parent_relevance_map()
+
+        if level == "child":
+            return self.child_relevance_map()
+
+        raise ValueError(f"Unsupported relevance level: {level}")
 
 
 # ============================================================

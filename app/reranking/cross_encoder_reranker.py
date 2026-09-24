@@ -3,7 +3,7 @@ from typing import List
 import torch
 from pydantic import BaseModel, Field
 from sentence_transformers import CrossEncoder
-
+from config.settings import RerankingConfig
 from app.retrieval.parent_child_retriever import (
     ParentRetrievalResult,
 )
@@ -41,12 +41,10 @@ class RerankingResponse(BaseModel):
 
 class CrossEncoderReranker:
 
-    def __init__(
-        self,
-        model_name: str = ("cross-encoder/" "ms-marco-MiniLM-L6-v2"),
-    ) -> None:
+    def __init__(self, model_name: str) -> None:
 
-        self.model_name = model_name
+        reranking_config = RerankingConfig()
+        self.model_name = (reranking_config.model_name,)
 
         print(f"Loading reranker model: " f"{self.model_name}")
 

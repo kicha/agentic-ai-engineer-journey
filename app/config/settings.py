@@ -103,3 +103,15 @@ class HybridSearchConfig(BaseModel):
         default=2,
         ge=1,
     )
+
+
+class RerankingConfig(BaseModel):
+
+    provider: str = "local"
+
+    model_name: str = "cross-encoder/" "ms-marco-MiniLM-L6-v2"
+
+    top_k: int = Field(
+        default=5,
+        ge=1,
+    )
