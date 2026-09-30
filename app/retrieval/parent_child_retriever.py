@@ -3,7 +3,7 @@ from typing import Dict, List
 from pydantic import BaseModel, Field
 
 from app.config.settings import ChunkingConfig
-from app.embeddings.embedding_service import EmbeddingService
+from app.embeddings.base import DenseEmbeddingService
 from app.models.parent_chunk import ParentChunk
 from app.repositories.parent_repository import ParentRepository
 from app.vectorstore.qdrant_store import QdrantVectorStore
@@ -52,7 +52,7 @@ class ParentChildRetriever:
     def __init__(
         self,
         config: ChunkingConfig,
-        embedder: EmbeddingService,
+        embedder: DenseEmbeddingService,
         vector_store: QdrantVectorStore,
         parent_repository: ParentRepository,
     ) -> None:
@@ -230,3 +230,4 @@ class ParentChildRetriever:
             parent_results = parent_results[:parent_top_k]
 
         return parent_results
+

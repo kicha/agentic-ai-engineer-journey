@@ -3,11 +3,19 @@ from __future__ import annotations
 import json
 import logging
 
-from app.config.settings import ChunkingConfig, HybridSearchConfig
-from app.embeddings.embedding_service import (
-    EmbeddingService,
+from app.config.settings import (
+    ChunkingConfig,
+    CloudConfig,
+    DenseEmbeddingProvider,
+    HybridSearchConfig,
+    QdrantConfig,
+    QdrantDeployment,
 )
-from app.embeddings.sparse_embedding_service import SparseEmbeddingService
+
+from app.embeddings.factory import (
+    create_dense_embedding_service,
+    create_sparse_embedding_service,
+)
 from app.repositories.parent_repository import ParentRepository
 from app.retrieval.hybrid_child_retriever import HybridChildRetriever
 from app.utils.logging_config import configure_logging
@@ -59,30 +67,45 @@ def load_gold_dataset() -> GoldDatasetV2:
 
 def build_child_retriever() -> HybridChildRetriever:
     """
-    Construct the real child retrieval stack.
-
-    This executable entry point is responsible for dependency wiring.
-    The reusable benchmark runner remains independently unit-testable.
+    Construct the Benchmark V2 cloud retrieval stack.
+    Dense: hosted cloud embedding provider
+    Sparse: current local BM25 provider
+    Vector database: Qdrant Cloud
     """
 
-    config = ChunkingConfig()
-    hybrid_search_config = HybridSearchConfig()
-
-    embedding_service = EmbeddingService(
-        model_name=config.embedding_model_name,
+    config = ChunkingConfig(
+        dense_embedding_provider=(DenseEmbeddingProvider.CLOUD),
     )
-    sparse_embedding_service = SparseEmbeddingService()
-    vector_size = embedding_service.model.get_embedding_dimension()
+
+    cloud_config = CloudConfig()
+
+    hybrid_search_config = HybridSearchConfig(
+        collection_name=("structure_aware_v4_benchmark_v2_cloud"),
+    )
+
+    qdrant_config = QdrantConfig(
+        deployment=QdrantDeployment.CLOUD,
+    )
+
+    embedding_service = create_dense_embedding_service(
+        config=config,
+        cloud_config=cloud_config,
+    )
+
+    sparse_embedding_service = create_sparse_embedding_service(
+        config=config,
+    )
 
     vector_store = HybridQdrantStore(
         config=hybrid_search_config,
-        vector_size=vector_size,
+        vector_size=(embedding_service.embedding_dimension),
+        qdrant_config=qdrant_config,
     )
 
     return HybridChildRetriever(
         vector_store=vector_store,
         dense_embedding_service=embedding_service,
-        sparse_embedding_service=sparse_embedding_service,
+        sparse_embedding_service=(sparse_embedding_service),
     )
 
 

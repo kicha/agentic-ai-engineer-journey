@@ -4,7 +4,7 @@ from scripts.test_parent_chunking import DemoDocumentFactory
 from app.chunking.structure_aware_parent import StructureAwareParentChunker
 from app.repositories.parent_repository import ParentRepository
 from app.chunking.child_chunker import ChildChunker
-from app.embeddings.embedding_service import EmbeddingService
+from app.embeddings.local_dense_embedding_service import LocalDenseEmbeddingService
 from app.vectorstore.qdrant_store import QdrantVectorStore
 
 # ============================================================
@@ -278,7 +278,7 @@ def main():
         print("CHILD EMBEDDINGS")
         print("=" * 70)
 
-        embedder = EmbeddingService(config.embedding_model_name)
+        embedder = LocalDenseEmbeddingService(config.embedding_model_name)
         child_texts = [child.content for child in children]
         child_embeddings = embedder.embed(child_texts)
 
@@ -322,3 +322,4 @@ def main():
 if __name__ == "__main__":
 
     main()
+

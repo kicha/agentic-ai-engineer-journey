@@ -9,14 +9,17 @@ from app.chunking.structure_aware_parent import (
 from app.chunking.structure_detector import StructureDetector
 from app.config.settings import (
     ChunkingConfig,
+    CloudConfig,
     HybridSearchConfig,
+    QdrantConfig,
+    SparseEmbeddingProvider,
 )
-from app.embeddings.embedding_service import (
-    EmbeddingService,
+
+from app.embeddings.factory import (
+    create_dense_embedding_service,
+    create_sparse_embedding_service,
 )
-from app.embeddings.sparse_embedding_service import (
-    SparseEmbeddingService,
-)
+
 from app.models.child_chunk import ChildChunk
 from app.models.document import Document
 from app.models.parent_chunk import ParentChunk
@@ -70,6 +73,8 @@ class StructureAwareRAGDemo:
         self,
         config: ChunkingConfig,
         hybrid_config: HybridSearchConfig,
+        qdrant_config: QdrantConfig,
+        cloud_config: CloudConfig | None = None,
     ) -> None:
 
         self.config = config
@@ -78,18 +83,27 @@ class StructureAwareRAGDemo:
         self.parent_chunker = StructureAwareParentChunker(config)
         self.child_chunker = ChildChunker(config)
         self.parent_repository = ParentRepository(config)
-        self.dense_embedder = EmbeddingService(config.embedding_model_name)
-        self.sparse_embedder = SparseEmbeddingService(
-            model_name=(hybrid_config.sparse_model_name)
+        self.dense_embedder = create_dense_embedding_service(
+            config=config,
+            cloud_config=cloud_config,
         )
 
-        vector_size = self.dense_embedder.model.get_embedding_dimension()
-        qdrant_url = f"http://{config.qdrant_host}:" f"{config.qdrant_port}"
+        self.sparse_embedder = None
+
+        if config.sparse_embedding_provider == SparseEmbeddingProvider.LOCAL:
+            self.sparse_embedder = create_sparse_embedding_service(
+                config=config,
+            )
+        self.sparse_embedder = create_sparse_embedding_service(config=config)
+
+        vector_size = self.dense_embedder.embedding_dimension
 
         self.hybrid_vector_store = HybridQdrantStore(
             config=hybrid_config,
             vector_size=vector_size,
-            url=qdrant_url,
+            qdrant_config=qdrant_config,
+            sparse_embedding_provider=(config.sparse_embedding_provider),
+            sparse_model_name=(config.sparse_embedding_model),
         )
 
         logger.info(
@@ -238,7 +252,35 @@ class StructureAwareRAGDemo:
         # 9. SPARSE EMBEDDINGS
         # ====================================================
 
-        sparse_embeddings = self.sparse_embedder.embed_documents(child_texts)
+        if self.config.sparse_embedding_provider == SparseEmbeddingProvider.LOCAL:
+
+            if self.sparse_embedder is None:
+                raise RuntimeError(
+                    "Local sparse provider configured "
+                    "without SparseEmbeddingService."
+                )
+
+            sparse_embeddings = self.sparse_embedder.embed_documents(child_texts)
+
+            logger.info(
+                f"document_id="
+                f"{document.document_id} "
+                f"sparse_embeddings="
+                f"{len(sparse_embeddings)}"
+            )
+
+        else:
+
+            sparse_embeddings = None
+
+            logger.info(
+                f"document_id="
+                f"{document.document_id} "
+                f"sparse_embedding_provider="
+                f"qdrant_cloud "
+                f"model="
+                f"{self.config.sparse_embedding_model}"
+            )
 
         logger.info(
             f"document_id={document.document_id} "
@@ -261,12 +303,28 @@ class StructureAwareRAGDemo:
         # ====================================================
         # 11. INSERT CHILDREN
         # ====================================================
+        if (
+            self.config.sparse_embedding_provider
+            == SparseEmbeddingProvider.QDRANT_CLOUD
+        ):
 
-        self.hybrid_vector_store.insert_children(
-            children=children,
-            dense_embeddings=dense_embeddings,
-            sparse_embeddings=sparse_embeddings,
-        )
+            self.hybrid_vector_store.insert_children_cloud_sparse(
+                children=children,
+                dense_embeddings=dense_embeddings,
+            )
+
+        else:
+
+            if sparse_embeddings is None:
+                raise RuntimeError(
+                    "Sparse embeddings are required " "for local sparse insertion."
+                )
+
+            self.hybrid_vector_store.insert_children(
+                children=children,
+                dense_embeddings=dense_embeddings,
+                sparse_embeddings=(sparse_embeddings),
+            )
 
         logger.info(
             f"document_id={document.document_id} "

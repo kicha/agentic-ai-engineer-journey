@@ -1,7 +1,7 @@
 from typing import List
 
 from app.reranking.cross_encoder_reranker import (
-    CrossEncoderReranker,
+    LocalCrossEncoderReranker,
     RerankingResponse,
 )
 from app.retrieval.mmr_parent_child_retriever import MMRParentChildRetriever
@@ -13,7 +13,7 @@ class MMRRerankRetriever:
     def __init__(
         self,
         mmr_retriever: MMRParentChildRetriever,
-        reranker: CrossEncoderReranker,
+        reranker: LocalCrossEncoderReranker,
     ) -> None:
 
         self.mmr_retriever = mmr_retriever
@@ -50,7 +50,7 @@ class MMRRerankRetriever:
         # ----------------------------------------------------
         # 2. Adapt MMR parent results into the existing
         #    ParentRetrievalResult model expected by
-        #    CrossEncoderReranker.
+        #    LocalCrossEncoderReranker.
         # ----------------------------------------------------
 
         rerank_candidates: List[ParentRetrievalResult] = []
@@ -64,7 +64,7 @@ class MMRRerankRetriever:
                     # similarity among the MMR-selected
                     # children as the vector-stage score.
                     best_score=(mmr_result.best_query_similarity),
-                    # CrossEncoderReranker does not require
+                    # LocalCrossEncoderReranker does not require
                     # these child details to score the parent,
                     # so this can remain empty here.
                     matched_children=[],

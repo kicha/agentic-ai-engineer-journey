@@ -1,6 +1,6 @@
-from app.config.settings import ChunkingConfig
-from app.embeddings.embedding_service import (
-    EmbeddingService,
+from app.config.settings import ChunkingConfig, RerankingConfig
+from app.embeddings.local_dense_embedding_service import (
+    LocalDenseEmbeddingService,
 )
 from app.repositories.parent_repository import (
     ParentRepository,
@@ -9,7 +9,7 @@ from app.retrieval.parent_child_retriever import (
     ParentChildRetriever,
 )
 from app.reranking.cross_encoder_reranker import (
-    CrossEncoderReranker,
+    LocalCrossEncoderReranker,
 )
 from app.vectorstore.qdrant_store import (
     QdrantVectorStore,
@@ -23,14 +23,15 @@ from app.vectorstore.qdrant_store import (
 def main() -> None:
 
     config = ChunkingConfig()
+    reranking_config = RerankingConfig()
 
     # ========================================================
     # EMBEDDING MODEL
     # ========================================================
 
-    embedder = EmbeddingService(config.embedding_model_name)
+    embedder = LocalDenseEmbeddingService(config.embedding_model_name)
 
-    vector_size = embedder.model.get_embedding_dimension()
+    vector_size = embedder.embedding_dimension
 
     # ========================================================
     # VECTOR STORE
@@ -64,7 +65,7 @@ def main() -> None:
         # CROSS-ENCODER
         # ====================================================
 
-        reranker = CrossEncoderReranker()
+        reranker = LocalCrossEncoderReranker(model_name=reranking_config.model_name)
 
         # ====================================================
         # QUERY
@@ -179,3 +180,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

@@ -8,12 +8,8 @@ import numpy as np
 from pydantic import BaseModel, Field
 from qdrant_client.models import ScoredPoint
 
-from app.embeddings.embedding_service import (
-    EmbeddingService,
-)
-
-from app.models.parent_chunk import (
-    ParentChunk,
+from app.embeddings.base import (
+    DenseEmbeddingService,
 )
 
 from app.querying.multi_query_generator import (
@@ -26,7 +22,7 @@ from app.repositories.parent_repository import (
 )
 
 from app.reranking.cross_encoder_reranker import (
-    CrossEncoderReranker,
+    LocalCrossEncoderReranker,
 )
 
 from app.retrieval.hybrid_child_retriever import (
@@ -98,8 +94,8 @@ class MultiQueryHybridRetriever:
         query_generator: MultiQueryGenerator,
         hybrid_child_retriever: HybridChildRetriever,
         parent_repository: ParentRepository,
-        reranker: CrossEncoderReranker,
-        embedder: EmbeddingService,
+        reranker: LocalCrossEncoderReranker,
+        embedder: DenseEmbeddingService,
         lambda_mult: float = 0.7,
         multi_query_rrf_k: int = 60,
     ) -> None:

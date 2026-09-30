@@ -1,6 +1,6 @@
 from typing import Any
 
-from app.embeddings.embedding_service import EmbeddingService
+from app.embeddings.base import DenseEmbeddingService
 from app.retrieval.hyde.hyde_generator import HyDEGenerator
 
 
@@ -22,7 +22,7 @@ class HyDERetriever:
     def __init__(
         self,
         hyde_generator: HyDEGenerator,
-        embedding_service: EmbeddingService,
+        embedding_service: DenseEmbeddingService,
         vector_store: Any,
     ):
         self.hyde_generator = hyde_generator
@@ -69,3 +69,4 @@ class HyDERetriever:
         )
 
         return hyde_result, results
+

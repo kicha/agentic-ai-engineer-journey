@@ -1,5 +1,5 @@
-from app.embeddings.embedding_service import (
-    EmbeddingService,
+from app.embeddings.local_dense_embedding_service import (
+    LocalDenseEmbeddingService,
 )
 from app.retrieval.mmr_retriever import (
     MMRCandidate,
@@ -14,7 +14,7 @@ import numpy as np
 
 def main() -> None:
 
-    embedder = EmbeddingService("sentence-transformers/" "all-MiniLM-L6-v2")
+    embedder = LocalDenseEmbeddingService("sentence-transformers/" "all-MiniLM-L6-v2")
 
     query = "How does HNSW search efficiently?"
 
@@ -175,3 +175,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

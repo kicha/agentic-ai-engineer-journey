@@ -1,19 +1,24 @@
-from typing import List
+from __future__ import annotations
+import logging
+from typing import Sequence
 
 import torch
 from pydantic import BaseModel, Field
 from sentence_transformers import CrossEncoder
-from config.settings import RerankingConfig
+
+from app.reranking.base import Reranker
 from app.retrieval.parent_child_retriever import (
     ParentRetrievalResult,
 )
 
+logger = logging.getLogger(__name__)
 # ============================================================
 # RERANKED RESULT
 # ============================================================
 
 
 class RerankedParentResult(BaseModel):
+
     original_rank: int
     reranked_rank: int
     vector_score: float
@@ -31,22 +36,25 @@ class RerankingResponse(BaseModel):
     query: str
     candidate_count: int
     returned_count: int
-    results: List[RerankedParentResult] = Field(default_factory=list)
+
+    results: list[RerankedParentResult] = Field(default_factory=list)
 
 
 # ============================================================
-# CROSS-ENCODER RERANKER
+# LOCAL CROSS-ENCODER RERANKER
 # ============================================================
 
 
-class CrossEncoderReranker:
+class LocalCrossEncoderReranker(Reranker):
 
-    def __init__(self, model_name: str) -> None:
+    def __init__(
+        self,
+        model_name: str,
+    ) -> None:
 
-        reranking_config = RerankingConfig()
-        self.model_name = (reranking_config.model_name,)
+        self.model_name = model_name
 
-        print(f"Loading reranker model: " f"{self.model_name}")
+        logger.info(f"Loading local reranker model: {self.model_name}")
 
         # ----------------------------------------------------
         # MS MARCO CrossEncoder models normally return logits.
@@ -68,8 +76,9 @@ class CrossEncoderReranker:
 
     def rerank(
         self,
+        *,
         query: str,
-        candidates: List[ParentRetrievalResult],
+        candidates: Sequence[ParentRetrievalResult],
         top_k: int | None = None,
     ) -> RerankingResponse:
 
@@ -91,15 +100,13 @@ class CrossEncoderReranker:
             )
 
         # ----------------------------------------------------
-        # Build:
+        # Build CrossEncoder pairs:
         #
         # [
         #   (query, parent_1_content),
         #   (query, parent_2_content),
         #   ...
         # ]
-        #
-        # The CrossEncoder sees query + document TOGETHER.
         # ----------------------------------------------------
 
         pairs = [
@@ -143,7 +150,7 @@ class CrossEncoderReranker:
             )
 
         # ----------------------------------------------------
-        # Sort using CROSS-ENCODER score.
+        # Sort using CrossEncoder score.
         # ----------------------------------------------------
 
         scored_results.sort(
@@ -152,18 +159,17 @@ class CrossEncoderReranker:
         )
 
         # ----------------------------------------------------
-        # Apply final top-k AFTER reranking.
+        # Apply top-k AFTER reranking.
         # ----------------------------------------------------
 
         if top_k is not None:
-
             scored_results = scored_results[:top_k]
 
         # ----------------------------------------------------
-        # Convert to typed Pydantic output.
+        # Convert to typed output.
         # ----------------------------------------------------
 
-        reranked_results: List[RerankedParentResult] = []
+        reranked_results: list[RerankedParentResult] = []
 
         for reranked_index, item in enumerate(
             scored_results,
@@ -172,11 +178,11 @@ class CrossEncoderReranker:
 
             reranked_results.append(
                 RerankedParentResult(
-                    original_rank=(item["original_rank"]),
-                    reranked_rank=(reranked_index),
-                    vector_score=(item["vector_score"]),
-                    reranker_score=(item["reranker_score"]),
-                    result=(item["candidate"]),
+                    original_rank=item["original_rank"],
+                    reranked_rank=reranked_index,
+                    vector_score=item["vector_score"],
+                    reranker_score=item["reranker_score"],
+                    result=item["candidate"],
                 )
             )
 

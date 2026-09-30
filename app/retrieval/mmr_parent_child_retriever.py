@@ -3,7 +3,7 @@ from typing import Dict, List
 from pydantic import BaseModel, Field
 
 from app.config.settings import ChunkingConfig
-from app.embeddings.embedding_service import EmbeddingService
+from app.embeddings.base import DenseEmbeddingService
 from app.models.parent_chunk import ParentChunk
 from app.repositories.parent_repository import ParentRepository
 from app.retrieval.mmr_retriever import (
@@ -60,7 +60,7 @@ class MMRParentChildRetriever:
     def __init__(
         self,
         config: ChunkingConfig,
-        embedder: EmbeddingService,
+        embedder: DenseEmbeddingService,
         vector_store: QdrantVectorStore,
         parent_repository: ParentRepository,
         lambda_mult: float = 0.7,
@@ -258,3 +258,4 @@ class MMRParentChildRetriever:
         parent_results.sort(key=lambda result: result.first_mmr_rank)
 
         return parent_results[:parent_top_k]
+

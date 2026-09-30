@@ -1,14 +1,16 @@
 from app.config.settings import (
     ChunkingConfig,
     HybridSearchConfig,
+    QdrantConfig,
+    RerankingConfig,
 )
 
-from app.embeddings.embedding_service import (
-    EmbeddingService,
+from app.embeddings.local_dense_embedding_service import (
+    LocalDenseEmbeddingService,
 )
 
-from app.embeddings.sparse_embedding_service import (
-    SparseEmbeddingService,
+from app.embeddings.local_sparse_embedding_service import (
+    LocalSparseEmbeddingService,
 )
 
 from app.repositories.parent_repository import (
@@ -32,7 +34,7 @@ from app.retrieval.hybrid_rerank_mmr_retriever import (
 )
 
 from app.reranking.cross_encoder_reranker import (
-    CrossEncoderReranker,
+    LocalCrossEncoderReranker,
 )
 
 # ============================================================
@@ -41,27 +43,27 @@ from app.reranking.cross_encoder_reranker import (
 
 config = ChunkingConfig()
 hybrid_config = HybridSearchConfig()
+qdrant_config = QdrantConfig()
+reranking_config = RerankingConfig()
 
 
 # ============================================================
 # EMBEDDERS
 # ============================================================
 
-dense_embedder = EmbeddingService(config.embedding_model_name)
+dense_embedder = LocalDenseEmbeddingService(config.embedding_model_name)
 
-sparse_embedder = SparseEmbeddingService(hybrid_config.sparse_model_name)
+sparse_embedder = LocalSparseEmbeddingService(config.sparse_embedding_model)
 
 
 # ============================================================
 # VECTOR STORE
 # ============================================================
 
-vector_size = dense_embedder.model.get_embedding_dimension()
+vector_size = dense_embedder.embedding_dimension
 
 hybrid_store = HybridQdrantStore(
-    config=hybrid_config,
-    vector_size=vector_size,
-    url=(f"http://" f"{config.qdrant_host}:" f"{config.qdrant_port}"),
+    config=hybrid_config, vector_size=vector_size, qdrant_config=qdrant_config
 )
 
 
@@ -97,7 +99,7 @@ hybrid_parent_retriever = HybridParentChildRetriever(
 # CROSS ENCODER
 # ============================================================
 
-reranker = CrossEncoderReranker()
+reranker = LocalCrossEncoderReranker(model_name=reranking_config.model_name)
 
 
 # ============================================================
@@ -157,3 +159,4 @@ try:
 finally:
 
     parent_repository.close()
+

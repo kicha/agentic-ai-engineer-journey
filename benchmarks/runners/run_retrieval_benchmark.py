@@ -1,16 +1,13 @@
 from pathlib import Path
 
-from app.config.settings import (
-    ChunkingConfig,
-    HybridSearchConfig,
+from app.config.settings import ChunkingConfig, HybridSearchConfig, QdrantConfig
+
+from app.embeddings.local_dense_embedding_service import (
+    LocalDenseEmbeddingService,
 )
 
-from app.embeddings.embedding_service import (
-    EmbeddingService,
-)
-
-from app.embeddings.sparse_embedding_service import (
-    SparseEmbeddingService,
+from app.embeddings.local_sparse_embedding_service import (
+    LocalSparseEmbeddingService,
 )
 
 from benchmarks.evaluation.retrieval_benchmark import (
@@ -52,29 +49,27 @@ def main() -> None:
     # ========================================================
 
     config = ChunkingConfig()
-
     hybrid_config = HybridSearchConfig()
+    qdrant_config = QdrantConfig()
 
     # ========================================================
     # EMBEDDING SERVICES
     # ========================================================
 
-    dense_embedder = EmbeddingService(config.embedding_model_name)
+    dense_embedder = LocalDenseEmbeddingService(config.embedding_model_name)
 
-    sparse_embedder = SparseEmbeddingService(
-        model_name=(hybrid_config.sparse_model_name)
+    sparse_embedder = LocalSparseEmbeddingService(
+        model_name=(config.sparse_embedding_model)
     )
 
-    vector_size = dense_embedder.model.get_embedding_dimension()
+    vector_size = dense_embedder.embedding_dimension
 
     # ========================================================
     # HYBRID VECTOR STORE
     # ========================================================
 
     hybrid_store = HybridQdrantStore(
-        config=hybrid_config,
-        vector_size=vector_size,
-        url=(f"http://" f"{config.qdrant_host}:" f"{config.qdrant_port}"),
+        config=hybrid_config, vector_size=vector_size, qdrant_config=qdrant_config
     )
 
     # ========================================================
@@ -144,3 +139,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

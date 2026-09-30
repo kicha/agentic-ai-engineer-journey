@@ -1,9 +1,9 @@
-from app.config.settings import ChunkingConfig
-from app.embeddings.embedding_service import EmbeddingService
+from app.config.settings import ChunkingConfig, RerankingConfig
+from app.embeddings.local_dense_embedding_service import LocalDenseEmbeddingService
 from app.repositories.parent_repository import ParentRepository
 from app.retrieval.mmr_parent_child_retriever import MMRParentChildRetriever
 from app.retrieval.parent_child_retriever import ParentChildRetriever
-from app.reranking.cross_encoder_reranker import CrossEncoderReranker
+from app.reranking.cross_encoder_reranker import LocalCrossEncoderReranker
 from app.vectorstore.qdrant_store import QdrantVectorStore
 from app.retrieval.mmr_rerank_retriever import MMRRerankRetriever
 from app.retrieval.rerank_mmr_retriever import RerankMMRRetriever
@@ -110,8 +110,9 @@ def print_reranked_results(
 def main() -> None:
 
     config = ChunkingConfig()
-    embedder = EmbeddingService(config.embedding_model_name)
-    vector_size = embedder.model.get_embedding_dimension()
+    reranking_config = RerankingConfig()
+    embedder = LocalDenseEmbeddingService(config.embedding_model_name)
+    vector_size = embedder.embedding_dimension
     vector_store = QdrantVectorStore(
         config=config,
         vector_size=vector_size,
@@ -186,7 +187,7 @@ def main() -> None:
             parent_top_k=10,
         )
 
-        reranker = CrossEncoderReranker()
+        reranker = LocalCrossEncoderReranker(model_name=reranking_config.model_name)
 
         reranked_response = reranker.rerank(
             query=query,
@@ -317,3 +318,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

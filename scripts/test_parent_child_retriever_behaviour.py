@@ -1,7 +1,7 @@
 from types import SimpleNamespace
 
 from app.config.settings import ChunkingConfig
-from app.embeddings.embedding_service import EmbeddingService
+from app.embeddings.local_dense_embedding_service import LocalDenseEmbeddingService
 from app.repositories.parent_repository import ParentRepository
 from app.retrieval.parent_child_retriever import ParentChildRetriever
 from app.vectorstore.qdrant_store import QdrantVectorStore
@@ -280,7 +280,7 @@ def test_dangling_parent_reference(
 
     retriever = ParentChildRetriever(
         config=config,
-        embedder=FakeEmbeddingService(),
+        embedder=FakeLocalDenseEmbeddingService(),
         vector_store=FakeVectorStore(),
         parent_repository=FakeParentRepository(),
     )
@@ -325,9 +325,9 @@ def main() -> None:
 
     config = ChunkingConfig()
 
-    embedder = EmbeddingService(config.embedding_model_name)
+    embedder = LocalDenseEmbeddingService(config.embedding_model_name)
 
-    vector_size = embedder.model.get_embedding_dimension()
+    vector_size = embedder.embedding_dimension
 
     vector_store = QdrantVectorStore(
         config=config,
@@ -379,3 +379,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+

@@ -1,7 +1,7 @@
 from langchain_groq import ChatGroq
 
 from app.config.settings import ChunkingConfig
-from app.embeddings.embedding_service import EmbeddingService
+from app.embeddings.local_dense_embedding_service import LocalDenseEmbeddingService
 from app.retrieval.hyde.hyde_generator import HyDEGenerator
 from app.retrieval.hyde.hyde_retriever import HyDERetriever
 from app.vectorstore.qdrant_store import QdrantVectorStore
@@ -66,8 +66,8 @@ def main():
     # EMBEDDING SERVICE
     # ============================================================
 
-    embedding_service = EmbeddingService(config.embedding_model_name)
-    vector_size = embedding_service.model.get_embedding_dimension()
+    embedding_service = LocalDenseEmbeddingService(config.embedding_model_name)
+    vector_size = embedding_service.embedding_dimension
 
     # ============================================================
     # VECTOR STORE
@@ -163,3 +163,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+

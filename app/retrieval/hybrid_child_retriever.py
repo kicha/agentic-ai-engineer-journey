@@ -2,12 +2,11 @@ from typing import List
 
 from qdrant_client.models import ScoredPoint
 
-from app.embeddings.embedding_service import (
-    EmbeddingService,
-)
-from app.embeddings.sparse_embedding_service import (
+from app.embeddings.base import (
+    DenseEmbeddingService,
     SparseEmbeddingService,
 )
+
 from app.vectorstore.hybrid_qdrant_store import (
     HybridQdrantStore,
 )
@@ -17,9 +16,9 @@ class HybridChildRetriever:
 
     def __init__(
         self,
-        dense_embedding_service: EmbeddingService,
-        sparse_embedding_service: SparseEmbeddingService,
+        dense_embedding_service: DenseEmbeddingService,
         vector_store: HybridQdrantStore,
+        sparse_embedding_service: SparseEmbeddingService | None = None,
     ):
         self.dense_embedding_service = dense_embedding_service
         self.sparse_embedding_service = sparse_embedding_service
@@ -51,6 +50,15 @@ class HybridChildRetriever:
     def retrieve_sparse(self, query: str, limit: int = 10) -> List[ScoredPoint]:
 
         self._validate_query(query)
+        if self.vector_store.uses_cloud_sparse_inference:
+            return self.vector_store.sparse_search_text(
+                query_text=query,
+                limit=limit,
+            )
+        if self.sparse_embedding_service is None:
+            raise RuntimeError(
+                "Local sparse retrieval requires " "SparseEmbeddingService."
+            )
 
         sparse_vector = self.sparse_embedding_service.embed_query(query)
 
@@ -68,6 +76,18 @@ class HybridChildRetriever:
         self._validate_query(query)
 
         dense_vector = self.dense_embedding_service.embed_query(query)
+
+        if self.vector_store.uses_cloud_sparse_inference:
+            return self.vector_store.hybrid_search_text(
+                dense_query_vector=(dense_vector),
+                query_text=query,
+                limit=limit,
+            )
+
+        if self.sparse_embedding_service is None:
+            raise RuntimeError(
+                "Local hybrid retrieval requires " "SparseEmbeddingService."
+            )
 
         sparse_vector = self.sparse_embedding_service.embed_query(query)
 

@@ -1,16 +1,13 @@
 from collections import defaultdict
 
-from app.config.settings import (
-    ChunkingConfig,
-    HybridSearchConfig,
+from app.config.settings import ChunkingConfig, HybridSearchConfig, QdrantConfig
+
+from app.embeddings.local_dense_embedding_service import (
+    LocalDenseEmbeddingService,
 )
 
-from app.embeddings.embedding_service import (
-    EmbeddingService,
-)
-
-from app.embeddings.sparse_embedding_service import (
-    SparseEmbeddingService,
+from app.embeddings.local_sparse_embedding_service import (
+    LocalSparseEmbeddingService,
 )
 
 from app.repositories.parent_repository import (
@@ -30,24 +27,22 @@ from app.retrieval.hybrid_child_retriever import (
 # ============================================================
 
 config = ChunkingConfig()
-
 hybrid_config = HybridSearchConfig()
+qdrant_config = QdrantConfig()
 
 
 # ============================================================
 # SERVICES
 # ============================================================
 
-dense_embedder = EmbeddingService(config.embedding_model_name)
+dense_embedder = LocalDenseEmbeddingService(config.embedding_model_name)
 
-sparse_embedder = SparseEmbeddingService(model_name=hybrid_config.sparse_model_name)
+sparse_embedder = LocalSparseEmbeddingService(model_name=config.sparse_embedding_model)
 
-vector_size = dense_embedder.model.get_embedding_dimension()
+vector_size = dense_embedder.embedding_dimension
 
 hybrid_store = HybridQdrantStore(
-    config=hybrid_config,
-    vector_size=vector_size,
-    url=(f"http://" f"{config.qdrant_host}:" f"{config.qdrant_port}"),
+    config=hybrid_config, vector_size=vector_size, qdrant_config=qdrant_config
 )
 
 parent_repository = ParentRepository(config)
@@ -311,3 +306,4 @@ try:
 finally:
 
     parent_repository.close()
+

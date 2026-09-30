@@ -1,6 +1,6 @@
 from app.config.settings import ChunkingConfig
-from app.embeddings.embedding_service import (
-    EmbeddingService,
+from app.embeddings.local_dense_embedding_service import (
+    LocalDenseEmbeddingService,
 )
 from app.repositories.parent_repository import (
     ParentRepository,
@@ -25,9 +25,9 @@ def main() -> None:
     # EMBEDDING SERVICE
     # --------------------------------------------------------
 
-    embedder = EmbeddingService(config.embedding_model_name)
+    embedder = LocalDenseEmbeddingService(config.embedding_model_name)
 
-    vector_size = embedder.model.get_embedding_dimension()
+    vector_size = embedder.embedding_dimension
 
     # --------------------------------------------------------
     # QDRANT
@@ -137,3 +137,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+

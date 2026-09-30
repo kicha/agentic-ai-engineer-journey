@@ -14,7 +14,7 @@ from app.retrieval.hybrid_parent_child_retriever import (
 )
 
 from app.reranking.cross_encoder_reranker import (
-    CrossEncoderReranker,
+    LocalCrossEncoderReranker,
 )
 
 from app.retrieval.hybrid_rerank_mmr_retriever import (
@@ -40,65 +40,45 @@ AdvancedStrategy = Literal[
 class RankedParent(BaseModel):
 
     rank: int
-
     parent_id: str
-
     document_id: str
-
     parent_index: int
-
     score: float | None = None
 
 
 class AdvancedQueryMetrics(BaseModel):
 
     hit_at_3: float
-
     recall_at_3: float
-
     reciprocal_rank: float
-
     context_precision_at_3: float
 
 
 class AdvancedQueryResult(BaseModel):
 
     query: str
-
     query_class: str
-
     relevant_docs: List[str]
-
     retrieved_parents: List[RankedParent]
-
     metrics: AdvancedQueryMetrics
-
     latency_ms: float
 
 
 class AdvancedStrategySummary(BaseModel):
 
     strategy: AdvancedStrategy
-
     evaluated_queries: int
-
     hit_at_3: float
-
     recall_at_3: float
-
     mrr: float
-
     context_precision_at_3: float
-
     average_latency_ms: float
 
 
 class AdvancedStrategyResult(BaseModel):
 
     strategy: AdvancedStrategy
-
     query_results: List[AdvancedQueryResult]
-
     summary: AdvancedStrategySummary
 
 
@@ -112,7 +92,7 @@ class AdvancedRetrievalBenchmarkEvaluator:
     def __init__(
         self,
         hybrid_parent_retriever: HybridParentChildRetriever,
-        cross_encoder: CrossEncoderReranker,
+        cross_encoder: LocalCrossEncoderReranker,
         hybrid_rerank_mmr_retriever: HybridRerankMMRRetriever,
         hybrid_child_top_k: int = 30,
         cross_encoder_top_k: int = 10,

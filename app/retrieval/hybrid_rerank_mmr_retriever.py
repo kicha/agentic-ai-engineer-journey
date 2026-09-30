@@ -2,13 +2,11 @@ from typing import List
 
 import numpy as np
 
-from app.embeddings.embedding_service import (
-    EmbeddingService,
+from app.embeddings.base import (
+    DenseEmbeddingService,
 )
 
-from app.reranking.cross_encoder_reranker import (
-    CrossEncoderReranker,
-)
+from app.reranking.cross_encoder_reranker import LocalCrossEncoderReranker
 
 from app.retrieval.hybrid_parent_child_retriever import (
     HybridParentChildRetriever,
@@ -40,8 +38,8 @@ class HybridRerankMMRRetriever:
     def __init__(
         self,
         hybrid_parent_child_retriever: HybridParentChildRetriever,
-        reranker: CrossEncoderReranker,
-        embedder: EmbeddingService,
+        reranker: LocalCrossEncoderReranker,
+        embedder: DenseEmbeddingService,
         lambda_mult: float = 0.7,
     ) -> None:
 

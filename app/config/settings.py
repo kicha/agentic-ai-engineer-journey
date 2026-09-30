@@ -1,8 +1,35 @@
 from pydantic import BaseModel, Field
 import os
 from dotenv import load_dotenv
+from enum import StrEnum
 
 load_dotenv()
+
+
+class DenseEmbeddingProvider(StrEnum):
+    LOCAL = "local"
+    CLOUD = "cloud"
+
+
+class SparseEmbeddingProvider(StrEnum):
+    LOCAL = "local"
+    QDRANT_CLOUD = "qdrant_cloud"
+
+
+class CloudEmbeddingProvider(StrEnum):
+    JINA = "jina"
+    VOYAGE = "voyage"
+    COHERE = "cohere"
+
+
+class RerankerProvider(StrEnum):
+    LOCAL = "local"
+    CLOUD = "cloud"
+
+
+class QdrantDeployment(StrEnum):
+    LOCAL = "local"
+    CLOUD = "cloud"
 
 
 # ============================================================
@@ -31,6 +58,11 @@ class ChunkingConfig(BaseModel):
     # --------------------------------------------------------
 
     embedding_model_name: str = "sentence-transformers/all-MiniLM-L6-v2"
+    sparse_embedding_model: str = "Qdrant/bm25"
+    dense_embedding_provider: DenseEmbeddingProvider = DenseEmbeddingProvider.CLOUD
+    sparse_embedding_provider: SparseEmbeddingProvider = (
+        SparseEmbeddingProvider.QDRANT_CLOUD
+    )
 
     # --------------------------------------------------------
     # QDRANT - LEGACY DENSE COLLECTION
@@ -85,7 +117,6 @@ class HybridSearchConfig(BaseModel):
     collection_name: str = "structure_aware_v4_benchmark_v2"
     dense_vector_name: str = "dense"
     sparse_vector_name: str = "sparse"
-    sparse_model_name: str = "Qdrant/bm25"
     dense_prefetch_k: int = Field(
         default=15,
         ge=1,
@@ -107,11 +138,32 @@ class HybridSearchConfig(BaseModel):
 
 class RerankingConfig(BaseModel):
 
-    provider: str = "local"
-
-    model_name: str = "cross-encoder/" "ms-marco-MiniLM-L6-v2"
-
+    provider: RerankerProvider = RerankerProvider.LOCAL
+    model_name: str = "cross-encoder/ms-marco-MiniLM-L6-v2"
     top_k: int = Field(
         default=5,
         ge=1,
     )
+
+
+class QdrantConfig(BaseModel):
+
+    deployment: QdrantDeployment = QdrantDeployment.LOCAL
+    local_url: str = "http://localhost:6333"
+    cloud_url: str | None = os.getenv("QDRANT_URL")
+    api_key: str | None = os.getenv("QDRANT_API_KEY")
+    cloud_inference: bool = True
+    timeout_seconds: int = 60
+
+
+class CloudConfig(BaseModel):
+
+    embedding_provider: CloudEmbeddingProvider = CloudEmbeddingProvider.JINA
+    embedding_model: str = "jina-embeddings-v4"
+    embedding_dimension: int = 512
+    cloud_url: str = "https://api.jina.ai/v1/embeddings"
+    reranker_url: str = "https://api.jina.ai/v1/rerank"
+    api_key: str | None = os.getenv("CLOUD_EMBEDDING_API_KEY")
+    timeout_seconds: int = 90
+    max_retries: int = 3
+    retry_backoff_seconds: float = 2.0
