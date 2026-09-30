@@ -10,9 +10,10 @@ from app.chunking.structure_detector import StructureDetector
 from app.config.settings import (
     ChunkingConfig,
     CloudConfig,
+    EmbeddingConfig,
     HybridSearchConfig,
+    MongoConfig,
     QdrantConfig,
-    SparseEmbeddingProvider,
 )
 
 from app.embeddings.factory import (
@@ -71,30 +72,32 @@ class StructureAwareRAGDemo:
 
     def __init__(
         self,
-        config: ChunkingConfig,
+        chunking_config: ChunkingConfig,
+        embedding_config: EmbeddingConfig,
+        mongo_config: MongoConfig,
         hybrid_config: HybridSearchConfig,
         qdrant_config: QdrantConfig,
+        collection_name: str,
         cloud_config: CloudConfig | None = None,
     ) -> None:
 
-        self.config = config
+        self.chunking_config = chunking_config
+        self.embedding_config = embedding_config
+        self.mongo_config = mongo_config
+        self.collection_name = collection_name
         self.hybrid_config = hybrid_config
         self.detector = StructureDetector()
-        self.parent_chunker = StructureAwareParentChunker(config)
-        self.child_chunker = ChildChunker(config)
-        self.parent_repository = ParentRepository(config)
+        self.parent_chunker = StructureAwareParentChunker(chunking_config)
+        self.child_chunker = ChildChunker(chunking_config)
+        self.parent_repository = ParentRepository(mongo_config)
         self.dense_embedder = create_dense_embedding_service(
-            config=config,
+            config=embedding_config,
             cloud_config=cloud_config,
         )
 
-        self.sparse_embedder = None
-
-        if config.sparse_embedding_provider == SparseEmbeddingProvider.LOCAL:
-            self.sparse_embedder = create_sparse_embedding_service(
-                config=config,
-            )
-        self.sparse_embedder = create_sparse_embedding_service(config=config)
+        self.sparse_embedder = create_sparse_embedding_service(
+            config=embedding_config,
+        )
 
         vector_size = self.dense_embedder.embedding_dimension
 
@@ -102,16 +105,15 @@ class StructureAwareRAGDemo:
             config=hybrid_config,
             vector_size=vector_size,
             qdrant_config=qdrant_config,
-            sparse_embedding_provider=(config.sparse_embedding_provider),
-            sparse_model_name=(config.sparse_embedding_model),
+            collection_name=collection_name,
         )
 
         logger.info(
             f"Ingestion pipeline initialized "
             f"mongodb_collection="
-            f"{config.mongodb_parent_collection} "
+            f"{mongo_config.parent_collection} "
             f"qdrant_collection="
-            f"{hybrid_config.collection_name}"
+            f"{collection_name}"
         )
 
     # ========================================================
@@ -249,43 +251,21 @@ class StructureAwareRAGDemo:
             )
 
         # ====================================================
-        # 9. SPARSE EMBEDDINGS
+        # 9. SPARSE EMBEDDINGS / INFERENCE REQUESTS
         # ====================================================
 
-        if self.config.sparse_embedding_provider == SparseEmbeddingProvider.LOCAL:
+        sparse_embeddings = self.sparse_embedder.embed_documents(child_texts)
 
-            if self.sparse_embedder is None:
-                raise RuntimeError(
-                    "Local sparse provider configured "
-                    "without SparseEmbeddingService."
-                )
-
-            sparse_embeddings = self.sparse_embedder.embed_documents(child_texts)
-
-            logger.info(
-                f"document_id="
-                f"{document.document_id} "
-                f"sparse_embeddings="
-                f"{len(sparse_embeddings)}"
-            )
-
-        else:
-
-            sparse_embeddings = None
-
-            logger.info(
-                f"document_id="
-                f"{document.document_id} "
-                f"sparse_embedding_provider="
-                f"qdrant_cloud "
-                f"model="
-                f"{self.config.sparse_embedding_model}"
+        if len(sparse_embeddings) != len(children):
+            raise RuntimeError(
+                "Sparse embedding provider returned an unexpected number "
+                f"of results. expected={len(children)} actual={len(sparse_embeddings)}"
             )
 
         logger.info(
             f"document_id={document.document_id} "
-            f"sparse_embeddings="
-            f"{len(sparse_embeddings)}"
+            f"sparse_embeddings={len(sparse_embeddings)} "
+            f"sparse_provider={self.embedding_config.sparse_provider.value}"
         )
 
         # ====================================================
@@ -295,7 +275,7 @@ class StructureAwareRAGDemo:
         if recreate_hybrid_collection:
 
             logger.info(
-                f"Recreating Qdrant collection " f"{self.hybrid_config.collection_name}"
+                f"Recreating Qdrant collection " f"{self.collection_name}"
             )
 
             self.hybrid_vector_store.recreate_collection()
@@ -303,28 +283,12 @@ class StructureAwareRAGDemo:
         # ====================================================
         # 11. INSERT CHILDREN
         # ====================================================
-        if (
-            self.config.sparse_embedding_provider
-            == SparseEmbeddingProvider.QDRANT_CLOUD
-        ):
 
-            self.hybrid_vector_store.insert_children_cloud_sparse(
-                children=children,
-                dense_embeddings=dense_embeddings,
-            )
-
-        else:
-
-            if sparse_embeddings is None:
-                raise RuntimeError(
-                    "Sparse embeddings are required " "for local sparse insertion."
-                )
-
-            self.hybrid_vector_store.insert_children(
-                children=children,
-                dense_embeddings=dense_embeddings,
-                sparse_embeddings=(sparse_embeddings),
-            )
+        self.hybrid_vector_store.insert_children(
+            children=children,
+            dense_embeddings=dense_embeddings,
+            sparse_embeddings=sparse_embeddings,
+        )
 
         logger.info(
             f"document_id={document.document_id} "

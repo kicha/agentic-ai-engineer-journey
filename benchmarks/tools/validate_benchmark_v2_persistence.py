@@ -1,3 +1,4 @@
+import argparse
 import hashlib
 import json
 import logging
@@ -8,10 +9,8 @@ from pydantic import BaseModel
 from qdrant_client import QdrantClient
 from qdrant_client.models import Filter
 
-from app.config.settings import (
-    ChunkingConfig,
-    HybridSearchConfig,
-)
+from app.application_factory import build_runtime_configs
+from app.config.settings import HybridSearchConfig, MongoConfig, QdrantConfig, QdrantDeployment
 from app.repositories.parent_repository import (
     ParentRepository,
 )
@@ -74,6 +73,8 @@ class PersistenceValidationResult(BaseModel):
     child_parent_key_failures: int
 
     corpus_sha256: str
+    dense_vector_size: int
+    sparse_vector_configured: bool
 
     passed: bool
 
@@ -115,22 +116,37 @@ class BenchmarkV2PersistenceValidator:
 
     def __init__(
         self,
-        chunking_config: ChunkingConfig,
+        mongo_config: MongoConfig,
         hybrid_config: HybridSearchConfig,
+        collection_name: str,
+        qdrant_config: QdrantConfig,
     ) -> None:
 
-        self.chunking_config = chunking_config
+        self.mongo_config = mongo_config
         self.hybrid_config = hybrid_config
+        self.collection_name = collection_name
+        self.qdrant_config = qdrant_config
 
         # MongoDB is accessed through the repository abstraction
         # rather than bypassing the project persistence layer.
-        self.parent_repository = ParentRepository(chunking_config)
+        self.parent_repository = ParentRepository(mongo_config)
 
-        qdrant_url = (
-            f"http://{chunking_config.qdrant_host}:" f"{chunking_config.qdrant_port}"
-        )
-
-        self.qdrant_client = QdrantClient(url=qdrant_url)
+        if qdrant_config.deployment == QdrantDeployment.CLOUD:
+            if not qdrant_config.cloud_url:
+                raise ValueError("QDRANT_URL is required for Qdrant Cloud.")
+            if not qdrant_config.api_key:
+                raise ValueError("QDRANT_API_KEY is required for Qdrant Cloud.")
+            self.qdrant_client = QdrantClient(
+                url=qdrant_config.cloud_url,
+                api_key=qdrant_config.api_key,
+                cloud_inference=qdrant_config.cloud_inference,
+                timeout=qdrant_config.timeout_seconds,
+            )
+        else:
+            self.qdrant_client = QdrantClient(
+                url=qdrant_config.local_url,
+                timeout=qdrant_config.timeout_seconds,
+            )
 
     # ========================================================
     # PUBLIC VALIDATION ENTRY POINT
@@ -171,6 +187,10 @@ class BenchmarkV2PersistenceValidator:
         qdrant_children = self._load_all_qdrant_children()
         qdrant_document_ids = {child["document_id"] for child in qdrant_children}
         child_keys = {child["child_key"] for child in qdrant_children}
+
+        dense_vector_size, sparse_vector_configured = (
+            self._validate_qdrant_vector_configuration()
+        )
 
         # ----------------------------------------------------
         # Validate document universe
@@ -258,12 +278,55 @@ class BenchmarkV2PersistenceValidator:
             child_parent_id_failures=(child_parent_id_failures),
             child_parent_key_failures=(child_parent_key_failures),
             corpus_sha256=corpus_sha256,
+            dense_vector_size=dense_vector_size,
+            sparse_vector_configured=sparse_vector_configured,
             passed=True,
         )
 
         self._log_summary(result)
 
         return result
+
+    # ========================================================
+    # QDRANT VECTOR CONFIGURATION
+    # ========================================================
+
+    def _validate_qdrant_vector_configuration(self) -> tuple[int, bool]:
+        collection = self.qdrant_client.get_collection(
+            self.collection_name
+        )
+        params = collection.config.params
+        vectors = params.vectors
+        if isinstance(vectors, dict):
+            dense_params = vectors.get(self.hybrid_config.dense_vector_name)
+        else:
+            dense_params = vectors
+        dense_size = getattr(dense_params, "size", None)
+        if dense_size is None:
+            raise RuntimeError("Unable to determine dense vector size from Qdrant.")
+
+        expected_dense_size = (
+            512 if self.qdrant_config.deployment == QdrantDeployment.CLOUD else 384
+        )
+        if int(dense_size) != expected_dense_size:
+            raise RuntimeError(
+                "Unexpected dense vector size. "
+                f"expected={expected_dense_size} actual={dense_size}"
+            )
+
+        sparse_vectors = getattr(params, "sparse_vectors", None) or {}
+        sparse_configured = self.hybrid_config.sparse_vector_name in sparse_vectors
+        if not sparse_configured:
+            raise RuntimeError(
+                f"Missing sparse vector configuration: "
+                f"{self.hybrid_config.sparse_vector_name}"
+            )
+
+        logger.info(
+            f"dense_vector_size={dense_size} "
+            f"sparse_vector_configured={sparse_configured}"
+        )
+        return int(dense_size), sparse_configured
 
     # ========================================================
     # EXPECTED DOCUMENT IDS
@@ -325,7 +388,7 @@ class BenchmarkV2PersistenceValidator:
         limits must not determine validation completeness.
         """
 
-        collection_name = self.hybrid_config.collection_name
+        collection_name = self.collection_name
         children: list[dict[str, Any]] = []
         next_offset = None
 
@@ -676,7 +739,11 @@ class BenchmarkV2PersistenceValidator:
         logger.info(f"unique_child_keys=" f"{result.unique_child_keys}")
         logger.info(f"child_parent_id_failures=" f"{result.child_parent_id_failures}")
         logger.info(f"child_parent_key_failures=" f"{result.child_parent_key_failures}")
-        logger.info(f"corpus_sha256=" f"{result.corpus_sha256}")
+        logger.info(f"corpus_sha256={result.corpus_sha256}")
+        logger.info(f"dense_vector_size={result.dense_vector_size}")
+        logger.info(
+            f"sparse_vector_configured={result.sparse_vector_configured}"
+        )
         logger.info("Benchmark V2 persistence validation PASSED.")
 
     # ========================================================
@@ -695,19 +762,30 @@ class BenchmarkV2PersistenceValidator:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("--local", action="store_true")
+    group.add_argument("--cloud", action="store_true")
+    parser.add_argument("--collection", default=None)
+    args = parser.parse_args()
 
-    chunking_config = ChunkingConfig()
-    hybrid_config = HybridSearchConfig()
-
-    logger.info(f"mongodb_collection=" f"{chunking_config.mongodb_parent_collection}")
-
-    logger.info(f"qdrant_collection=" f"{hybrid_config.collection_name}")
-
-    validator = BenchmarkV2PersistenceValidator(
-        chunking_config=chunking_config,
-        hybrid_config=hybrid_config,
+    deployment = (
+        QdrantDeployment.LOCAL if args.local else QdrantDeployment.CLOUD
+    )
+    runtime = build_runtime_configs(
+        deployment=deployment,
+        collection_name=args.collection,
     )
 
+    logger.info(f"mongodb_collection={runtime.mongo.parent_collection}")
+    logger.info(f"qdrant_collection={runtime.collection_name}")
+
+    validator = BenchmarkV2PersistenceValidator(
+        mongo_config=runtime.mongo,
+        hybrid_config=runtime.hybrid,
+        collection_name=runtime.collection_name,
+        qdrant_config=runtime.qdrant,
+    )
     try:
         validator.validate()
     finally:

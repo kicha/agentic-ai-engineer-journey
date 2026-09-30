@@ -10,7 +10,7 @@ from pymongo import (
 from pymongo.collection import Collection
 from pymongo.database import Database
 
-from app.config.settings import ChunkingConfig
+from app.config.settings import MongoConfig
 from app.models.parent_chunk import ParentChunk
 
 logger = logging.getLogger(__name__)
@@ -59,12 +59,12 @@ class ParentRepository:
     text and therefore have the same content_hash.
     """
 
-    def __init__(self, config: ChunkingConfig) -> None:
+    def __init__(self, config: MongoConfig) -> None:
 
         self.config = config
-        self.client = MongoClient(config.mongodb_uri)
-        self.database: Database = self.client[config.mongodb_database]
-        self.collection: Collection = self.database[config.mongodb_parent_collection]
+        self.client = MongoClient(config.uri)
+        self.database: Database = self.client[config.database]
+        self.collection: Collection = self.database[config.parent_collection]
 
         self._create_indexes()
 

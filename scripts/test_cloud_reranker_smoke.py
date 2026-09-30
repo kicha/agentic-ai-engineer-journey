@@ -8,9 +8,7 @@ from app.config.settings import (
     RerankingConfig,
 )
 from app.reranking.cloud_reranker import CloudReranker
-from app.retrieval.parent_child_retriever import (
-    ParentRetrievalResult,
-)
+from app.retrieval.models import ParentRetrievalResult
 
 # ============================================================
 # HELPERS
@@ -58,7 +56,6 @@ def main() -> None:
 
     reranking_config = RerankingConfig(
         provider=RerankerProvider.CLOUD,
-        model_name="jina-reranker-v2-base-multilingual",
         top_k=3,
     )
 

@@ -7,9 +7,7 @@ from app.repositories.parent_repository import (
     ParentRepository,
 )
 from app.reranking.base import Reranker
-from app.retrieval.parent_child_retriever import (
-    ParentRetrievalResult,
-)
+from app.retrieval.models import ParentRetrievalResult
 from benchmarks.evaluation.benchmark_models import (
     BenchmarkRunResult,
     QueryRankingResult,

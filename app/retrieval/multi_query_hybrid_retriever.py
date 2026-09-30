@@ -3,14 +3,10 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import Dict, List
 
-import numpy as np
-
 from pydantic import BaseModel, Field
 from qdrant_client.models import ScoredPoint
 
-from app.embeddings.base import (
-    DenseEmbeddingService,
-)
+from app.embeddings.base import DenseEmbeddingService
 
 from app.querying.multi_query_generator import (
     MultiQueryGenerationResult,
@@ -21,24 +17,16 @@ from app.repositories.parent_repository import (
     ParentRepository,
 )
 
-from app.reranking.cross_encoder_reranker import (
-    LocalCrossEncoderReranker,
-)
+from app.reranking.base import Reranker
 
 from app.retrieval.hybrid_child_retriever import (
     HybridChildRetriever,
 )
 
-from app.retrieval.parent_child_retriever import (
-    ChildSearchHit,
-    ParentRetrievalResult,
-)
+from app.retrieval.models import ChildSearchHit, ParentRetrievalResult
 
-from app.retrieval.parent_mmr_selector import (
-    ParentMMRCandidate,
-    ParentMMRResult,
-    ParentMMRSelector,
-)
+from app.retrieval.parent_mmr_selector import ParentMMRResult
+from app.retrieval.parent_mmr_service import ParentMMRService
 
 # ============================================================
 # QUERY-SPECIFIC CHILD HIT
@@ -94,10 +82,11 @@ class MultiQueryHybridRetriever:
         query_generator: MultiQueryGenerator,
         hybrid_child_retriever: HybridChildRetriever,
         parent_repository: ParentRepository,
-        reranker: LocalCrossEncoderReranker,
+        reranker: Reranker,
         embedder: DenseEmbeddingService,
         lambda_mult: float = 0.7,
         multi_query_rrf_k: int = 60,
+        parent_mmr_service: ParentMMRService | None = None,
     ) -> None:
 
         if multi_query_rrf_k < 0:
@@ -110,29 +99,9 @@ class MultiQueryHybridRetriever:
         self.reranker = reranker
         self.embedder = embedder
         self.multi_query_rrf_k = multi_query_rrf_k
-        self.mmr_selector = ParentMMRSelector(lambda_mult=(lambda_mult))
-
-    # ========================================================
-    # COSINE SIMILARITY
-    # ========================================================
-
-    @staticmethod
-    def _cosine_similarity(
-        vector_a: np.ndarray,
-        vector_b: np.ndarray,
-    ) -> float:
-
-        denominator = np.linalg.norm(vector_a) * np.linalg.norm(vector_b)
-
-        if denominator == 0.0:
-            return 0.0
-
-        return float(
-            np.dot(
-                vector_a,
-                vector_b,
-            )
-            / denominator
+        self.parent_mmr_service = parent_mmr_service or ParentMMRService(
+            embedder=embedder,
+            lambda_mult=lambda_mult,
         )
 
     # ========================================================
@@ -384,59 +353,10 @@ class MultiQueryHybridRetriever:
         reranked_results,
         final_top_k: int,
     ) -> List[ParentMMRResult]:
-
-        # ----------------------------------------------------
-        # IMPORTANT:
-        #
-        # Generated queries were used only for candidate
-        # discovery.
-        #
-        # Final relevance remains anchored to the user's
-        # ORIGINAL query.
-        # ----------------------------------------------------
-
-        query_embedding = np.asarray(
-            self.embedder.embed_query(original_query),
-            dtype=np.float32,
-        )
-
-        parent_texts = [item.result.parent.content for item in reranked_results]
-
-        parent_embeddings = self.embedder.embed_documents(parent_texts)
-
-        mmr_candidates: List[ParentMMRCandidate] = []
-
-        for (
-            reranked_item,
-            parent_embedding,
-        ) in zip(
-            reranked_results,
-            parent_embeddings,
-        ):
-
-            parent_vector = np.asarray(
-                parent_embedding,
-                dtype=np.float32,
-            )
-
-            query_similarity = self._cosine_similarity(
-                query_embedding,
-                parent_vector,
-            )
-
-            mmr_candidates.append(
-                ParentMMRCandidate(
-                    parent=(reranked_item.result.parent),
-                    query_similarity=(query_similarity),
-                    cross_encoder_score=(reranked_item.reranker_score),
-                    cross_encoder_rank=(reranked_item.reranked_rank),
-                    embedding=(parent_vector.tolist()),
-                )
-            )
-
-        return self.mmr_selector.select(
-            candidates=(mmr_candidates),
-            top_k=(final_top_k),
+        return self.parent_mmr_service.select(
+            query=original_query,
+            reranked_results=list(reranked_results),
+            top_k=final_top_k,
         )
 
     # ========================================================
@@ -448,7 +368,7 @@ class MultiQueryHybridRetriever:
         query: str,
         child_top_k_per_query: int = 15,
         fused_child_top_k: int = 30,
-        cross_encoder_top_k: int = 10,
+        reranker_top_k: int = 10,
         final_top_k: int = 3,
     ) -> MultiQueryRetrievalResult:
 
@@ -466,17 +386,17 @@ class MultiQueryHybridRetriever:
 
             raise ValueError("fused_child_top_k must " "be greater than zero.")
 
-        if cross_encoder_top_k <= 0:
+        if reranker_top_k <= 0:
 
-            raise ValueError("cross_encoder_top_k must " "be greater than zero.")
+            raise ValueError("reranker_top_k must " "be greater than zero.")
 
         if final_top_k <= 0:
 
             raise ValueError("final_top_k must " "be greater than zero.")
 
-        if final_top_k > cross_encoder_top_k:
+        if final_top_k > reranker_top_k:
 
-            raise ValueError("final_top_k cannot exceed " "cross_encoder_top_k.")
+            raise ValueError("final_top_k cannot exceed " "reranker_top_k.")
 
         # ====================================================
         # 1. GENERATE MULTIPLE QUERY PERSPECTIVES
@@ -537,7 +457,7 @@ class MultiQueryHybridRetriever:
         reranked_response = self.reranker.rerank(
             query=(original_query),
             candidates=(parent_candidates),
-            top_k=(cross_encoder_top_k),
+            top_k=(reranker_top_k),
         )
 
         if not reranked_response.results:

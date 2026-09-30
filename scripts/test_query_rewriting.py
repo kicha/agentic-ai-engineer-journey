@@ -2,6 +2,7 @@ import os
 
 from langchain_groq import ChatGroq
 
+from app.config.settings import QueryingConfig
 from app.querying.query_rewriter import (
     QueryRewriter,
 )
@@ -56,8 +57,9 @@ def main() -> None:
     # LLM
     # ========================================================
 
+    querying_config = QueryingConfig()
     llm = ChatGroq(
-        model="openai/gpt-oss-120b",
+        model=querying_config.llm_model,
         temperature=0,
         max_retries=2,
     )

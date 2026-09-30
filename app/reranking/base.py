@@ -4,9 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Sequence, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from app.retrieval.parent_child_retriever import (
-        ParentRetrievalResult,
-    )
+    from app.retrieval.models import ParentRetrievalResult
 
     from app.reranking.cross_encoder_reranker import (
         RerankingResponse,

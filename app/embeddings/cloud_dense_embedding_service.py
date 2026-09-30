@@ -24,7 +24,7 @@ class CloudDenseEmbeddingService(DenseEmbeddingService):
 
         self.model_name = cloud_config.embedding_model
         self._embedding_dimension = cloud_config.embedding_dimension
-        self.cloud_url = cloud_config.cloud_url
+        self.embedding_url = cloud_config.embedding_url
         self.api_key = cloud_config.api_key
         self.timeout_seconds = cloud_config.timeout_seconds
         self.max_retries = cloud_config.max_retries
@@ -100,7 +100,7 @@ class CloudDenseEmbeddingService(DenseEmbeddingService):
                 ) as client:
 
                     response = client.post(
-                        self.cloud_url,
+                        self.embedding_url,
                         headers=headers,
                         json=payload,
                     )

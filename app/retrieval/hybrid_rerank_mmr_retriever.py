@@ -1,208 +1,66 @@
-from typing import List
+from __future__ import annotations
 
-import numpy as np
-
-from app.embeddings.base import (
-    DenseEmbeddingService,
-)
-
-from app.reranking.cross_encoder_reranker import LocalCrossEncoderReranker
-
-from app.retrieval.hybrid_parent_child_retriever import (
-    HybridParentChildRetriever,
-)
-
-from app.retrieval.parent_mmr_selector import (
-    ParentMMRCandidate,
-    ParentMMRResult,
-    ParentMMRSelector,
-)
+from app.embeddings.base import DenseEmbeddingService
+from app.reranking.base import Reranker
+from app.retrieval.hybrid_parent_child_retriever import HybridParentChildRetriever
+from app.retrieval.parent_mmr_selector import ParentMMRResult
+from app.retrieval.parent_mmr_service import ParentMMRService
 
 
 class HybridRerankMMRRetriever:
-    """
-    Full advanced retrieval pipeline.
-
-    Flow
-    ----
-    Query
-        -> Hybrid child retrieval
-        -> RRF fusion
-        -> Parent expansion/deduplication
-        -> CrossEncoder parent reranking
-        -> CrossEncoder pruning
-        -> Dense parent MMR
-        -> final ParentChunks
-    """
+    """Hybrid -> parent expansion/dedup -> reranker -> dense Parent MMR."""
 
     def __init__(
         self,
         hybrid_parent_child_retriever: HybridParentChildRetriever,
-        reranker: LocalCrossEncoderReranker,
-        embedder: DenseEmbeddingService,
+        reranker: Reranker,
+        embedder: DenseEmbeddingService | None = None,
         lambda_mult: float = 0.7,
+        parent_mmr_service: ParentMMRService | None = None,
     ) -> None:
-
         self.hybrid_parent_child_retriever = hybrid_parent_child_retriever
-
         self.reranker = reranker
-        self.embedder = embedder
-
-        self.mmr_selector = ParentMMRSelector(lambda_mult=lambda_mult)
-
-    # ========================================================
-    # COSINE SIMILARITY
-    # ========================================================
-
-    @staticmethod
-    def _cosine_similarity(
-        vector_a: np.ndarray,
-        vector_b: np.ndarray,
-    ) -> float:
-
-        denominator = np.linalg.norm(vector_a) * np.linalg.norm(vector_b)
-
-        if denominator == 0.0:
-            return 0.0
-
-        return float(
-            np.dot(
-                vector_a,
-                vector_b,
+        if parent_mmr_service is None:
+            if embedder is None:
+                raise ValueError(
+                    "embedder is required when parent_mmr_service is not supplied."
+                )
+            parent_mmr_service = ParentMMRService(
+                embedder=embedder,
+                lambda_mult=lambda_mult,
             )
-            / denominator
-        )
-
-    # ========================================================
-    # RETRIEVE
-    # ========================================================
+        self.parent_mmr_service = parent_mmr_service
 
     def retrieve(
         self,
         query: str,
         child_top_k: int = 15,
-        cross_encoder_top_k: int = 5,
+        reranker_top_k: int = 5,
         final_top_k: int = 3,
-    ) -> List[ParentMMRResult]:
-
-        query = query.strip()
-
-        if not query:
+    ) -> list[ParentMMRResult]:
+        normalized_query = query.strip()
+        if not normalized_query:
             raise ValueError("Query cannot be empty.")
-
-        if child_top_k <= 0:
-            raise ValueError("child_top_k must be " "greater than zero.")
-
-        if cross_encoder_top_k <= 0:
-            raise ValueError("cross_encoder_top_k must be " "greater than zero.")
-
-        if final_top_k <= 0:
-            raise ValueError("final_top_k must be " "greater than zero.")
-
-        if final_top_k > cross_encoder_top_k:
-            raise ValueError("final_top_k cannot exceed " "cross_encoder_top_k.")
-
-        # ====================================================
-        # 1. HYBRID CHILD -> PARENT RETRIEVAL
-        # ====================================================
+        if child_top_k <= 0 or reranker_top_k <= 0 or final_top_k <= 0:
+            raise ValueError("Retrieval top-k values must be greater than zero.")
+        if final_top_k > reranker_top_k:
+            raise ValueError("final_top_k cannot exceed reranker_top_k.")
 
         parent_candidates = self.hybrid_parent_child_retriever.retrieve(
-            query=query,
-            # RRF returns this many children.
+            query=normalized_query,
             child_top_k=child_top_k,
-            # Give CrossEncoder the broadest
-            # unique parent candidate pool available.
             parent_top_k=None,
         )
-
         if not parent_candidates:
             return []
 
-        # ====================================================
-        # 2. CROSS-ENCODER PARENT RERANKING
-        # ====================================================
-
-        reranked_response = self.reranker.rerank(
-            query=query,
+        reranked = self.reranker.rerank(
+            query=normalized_query,
             candidates=parent_candidates,
-            top_k=cross_encoder_top_k,
+            top_k=reranker_top_k,
         )
-
-        if not reranked_response.results:
-            return []
-
-        # ====================================================
-        # 3. DENSE QUERY EMBEDDING
-        # ====================================================
-
-        query_embedding = np.asarray(
-            self.embedder.embed_query(query),
-            dtype=np.float32,
-        )
-
-        # ====================================================
-        # 4. EMBED CROSS-ENCODER SURVIVOR PARENTS
-        # ====================================================
-
-        parent_texts = [
-            item.result.parent.content for item in reranked_response.results
-        ]
-
-        parent_embeddings = self.embedder.embed_documents(parent_texts)
-
-        # ====================================================
-        # 5. BUILD PARENT MMR CANDIDATES
-        # ====================================================
-
-        mmr_candidates: List[ParentMMRCandidate] = []
-
-        for (
-            reranked_item,
-            parent_embedding,
-        ) in zip(
-            reranked_response.results,
-            parent_embeddings,
-        ):
-
-            parent_vector = np.asarray(
-                parent_embedding,
-                dtype=np.float32,
-            )
-
-            # -----------------------------------------------
-            # MMR relevance stays in dense cosine space.
-            #
-            # IMPORTANT:
-            #
-            # We do NOT use:
-            #   RRF score
-            #
-            # and we do NOT use:
-            #   CrossEncoder score
-            #
-            # numerically inside MMR.
-            # -----------------------------------------------
-
-            query_similarity = self._cosine_similarity(
-                query_embedding,
-                parent_vector,
-            )
-
-            mmr_candidates.append(
-                ParentMMRCandidate(
-                    parent=(reranked_item.result.parent),
-                    query_similarity=(query_similarity),
-                    cross_encoder_score=(reranked_item.reranker_score),
-                    cross_encoder_rank=(reranked_item.reranked_rank),
-                    embedding=(parent_vector.tolist()),
-                )
-            )
-
-        # ====================================================
-        # 6. DENSE PARENT MMR
-        # ====================================================
-
-        return self.mmr_selector.select(
-            candidates=mmr_candidates,
+        return self.parent_mmr_service.select(
+            query=normalized_query,
+            reranked_results=reranked.results,
             top_k=final_top_k,
         )

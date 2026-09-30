@@ -7,9 +7,7 @@ from pydantic import BaseModel, Field
 from sentence_transformers import CrossEncoder
 
 from app.reranking.base import Reranker
-from app.retrieval.parent_child_retriever import (
-    ParentRetrievalResult,
-)
+from app.retrieval.models import ParentRetrievalResult
 
 logger = logging.getLogger(__name__)
 # ============================================================
@@ -150,7 +148,7 @@ class LocalCrossEncoderReranker(Reranker):
             )
 
         # ----------------------------------------------------
-        # Sort using CrossEncoder score.
+        # Sort using Reranker score.
         # ----------------------------------------------------
 
         scored_results.sort(

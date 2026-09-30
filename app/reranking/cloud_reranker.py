@@ -9,9 +9,7 @@ from app.reranking.cross_encoder_reranker import (
     RerankedParentResult,
     RerankingResponse,
 )
-from app.retrieval.parent_child_retriever import (
-    ParentRetrievalResult,
-)
+from app.retrieval.models import ParentRetrievalResult
 
 
 class CloudReranker(Reranker):

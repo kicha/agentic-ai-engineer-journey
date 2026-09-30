@@ -13,9 +13,7 @@ from app.config.settings import (
     RerankingConfig,
 )
 from app.reranking.cloud_reranker import CloudReranker
-from app.retrieval.parent_child_retriever import (
-    ParentRetrievalResult,
-)
+from app.retrieval.models import ParentRetrievalResult
 
 # ============================================================
 # TEST HELPERS

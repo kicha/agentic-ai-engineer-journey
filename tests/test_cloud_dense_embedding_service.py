@@ -12,7 +12,7 @@ def make_config() -> CloudConfig:
     return CloudConfig(
         embedding_model="jina-embeddings-v4",
         embedding_dimension=3,
-        cloud_url="https://example.test/embeddings",
+        embedding_url="https://example.test/embeddings",
         api_key="test-key",
         timeout_seconds=10.0,
     )

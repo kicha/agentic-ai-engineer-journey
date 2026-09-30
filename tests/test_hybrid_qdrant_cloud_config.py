@@ -28,6 +28,7 @@ def test_local_qdrant_client_configuration(
         config=HybridSearchConfig(),
         vector_size=384,
         qdrant_config=qdrant_config,
+        collection_name="test",
     )
 
     mock_qdrant_client.assert_called_once_with(
@@ -53,6 +54,7 @@ def test_cloud_qdrant_client_configuration(
         config=HybridSearchConfig(),
         vector_size=384,
         qdrant_config=qdrant_config,
+        collection_name="test",
     )
 
     mock_qdrant_client.assert_called_once_with(
@@ -79,6 +81,7 @@ def test_cloud_qdrant_requires_url() -> None:
             config=HybridSearchConfig(),
             vector_size=384,
             qdrant_config=qdrant_config,
+            collection_name="test",
         )
 
 
@@ -98,4 +101,5 @@ def test_cloud_qdrant_requires_api_key() -> None:
             config=HybridSearchConfig(),
             vector_size=384,
             qdrant_config=qdrant_config,
+            collection_name="test",
         )

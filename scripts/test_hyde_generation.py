@@ -1,13 +1,14 @@
 from langchain_groq import ChatGroq
 
+from app.config.settings import QueryingConfig
 from app.retrieval.hyde.hyde_generator import HyDEGenerator
 
 
 def main():
 
+    querying_config = QueryingConfig()
     llm = ChatGroq(
-        # model="llama-3.3-70b-versatile",
-        model="openai/gpt-oss-120b",
+        model=querying_config.llm_model,
         temperature=0.0,
     )
 

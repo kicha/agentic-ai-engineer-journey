@@ -54,7 +54,7 @@ class RewrittenQueryRetriever:
         query: str,
         context: str | None = None,
         child_top_k: int = 30,
-        cross_encoder_top_k: int = 10,
+        reranker_top_k: int = 10,
         final_top_k: int = 3,
     ) -> RewrittenQueryRetrievalResult:
 
@@ -82,7 +82,7 @@ class RewrittenQueryRetriever:
         results = self.retriever.retrieve(
             query=(rewrite_result.rewritten_query),
             child_top_k=(child_top_k),
-            cross_encoder_top_k=(cross_encoder_top_k),
+            reranker_top_k=(reranker_top_k),
             final_top_k=(final_top_k),
         )
 

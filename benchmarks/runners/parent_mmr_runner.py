@@ -256,8 +256,8 @@ class ParentMMRRunner:
                 ParentMMRCandidate(
                     parent=parent,
                     query_similarity=(query_similarity),
-                    cross_encoder_score=(reranker_score),
-                    cross_encoder_rank=(ranked_item.rank),
+                    reranker_score=(reranker_score),
+                    reranker_rank=(ranked_item.rank),
                     embedding=(parent_vector.tolist()),
                 )
             )
@@ -308,8 +308,8 @@ class ParentMMRRunner:
                         # ----------------------------
                         # RERANK TRACE
                         # ----------------------------
-                        "pre_mmr_rank": (mmr_result.cross_encoder_rank),
-                        "reranker_score": (mmr_result.cross_encoder_score),
+                        "pre_mmr_rank": (mmr_result.reranker_rank),
+                        "reranker_score": (mmr_result.reranker_score),
                         # ----------------------------
                         # MMR TRACE
                         # ----------------------------

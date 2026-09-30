@@ -3,12 +3,10 @@ from __future__ import annotations
 import json
 import logging
 
+from app.application_factory import build_runtime_configs
 from app.config.settings import (
-    ChunkingConfig,
     CloudConfig,
-    DenseEmbeddingProvider,
     HybridSearchConfig,
-    QdrantConfig,
     QdrantDeployment,
     RerankerProvider,
     RerankingConfig,
@@ -50,7 +48,7 @@ logger = logging.getLogger(__name__)
 # BENCHMARK CONSTANTS
 # ============================================================
 
-CLOUD_COLLECTION_NAME = "structure_aware_v4_benchmark_v2_cloud"
+CLOUD_COLLECTION_NAME = HybridSearchConfig().cloud_collection_name
 
 CHILD_CANDIDATE_LIMIT = 10
 PARENT_CANDIDATE_LIMIT = 5
@@ -64,8 +62,9 @@ FINAL_PARENT_K = 3
 
 MMR_LAMBDA = 0.7
 
-CLOUD_RERANKER_MODEL = "jina-reranker-v2-base-multilingual"
-LOCAL_RERANKER_MODEL = "cross-encoder/ms-marco-MiniLM-L6-v2"
+DEFAULT_RERANKING_CONFIG = RerankingConfig()
+CLOUD_RERANKER_MODEL = DEFAULT_RERANKING_CONFIG.model_name
+LOCAL_RERANKER_MODEL = DEFAULT_RERANKING_CONFIG.local_model_name
 
 
 # ============================================================
@@ -125,42 +124,34 @@ def build_cloud_child_retriever() -> tuple[
         hosted cloud embedding provider
 
     Sparse:
-        existing local BM25 provider
+        Qdrant Cloud BM25 inference
 
     Vector database:
         Qdrant Cloud
 
     Collection:
-        structure_aware_v4_benchmark_v2_cloud
+        configured Qdrant Cloud collection
     """
 
-    chunking_config = ChunkingConfig(
-        dense_embedding_provider=(DenseEmbeddingProvider.CLOUD),
-    )
-
-    cloud_config = CloudConfig()
-
-    hybrid_search_config = HybridSearchConfig(
-        collection_name=(CLOUD_COLLECTION_NAME),
-    )
-
-    qdrant_config = QdrantConfig(
+    runtime = build_runtime_configs(
         deployment=QdrantDeployment.CLOUD,
+        collection_name=CLOUD_COLLECTION_NAME,
     )
 
     dense_embedding_service = create_dense_embedding_service(
-        config=chunking_config,
-        cloud_config=cloud_config,
+        config=runtime.embedding,
+        cloud_config=runtime.cloud,
     )
 
     sparse_embedding_service = create_sparse_embedding_service(
-        config=chunking_config,
+        config=runtime.embedding,
     )
 
     vector_store = HybridQdrantStore(
-        config=hybrid_search_config,
-        vector_size=(dense_embedding_service.embedding_dimension),
-        qdrant_config=qdrant_config,
+        config=runtime.hybrid,
+        vector_size=dense_embedding_service.embedding_dimension,
+        qdrant_config=runtime.qdrant,
+        collection_name=runtime.collection_name,
     )
 
     child_retriever = HybridChildRetriever(
@@ -185,9 +176,8 @@ def build_parent_repository() -> ParentRepository:
     MongoDB remains authoritative for ParentChunk content.
     """
 
-    return ParentRepository(
-        config=ChunkingConfig(),
-    )
+    runtime = build_runtime_configs(deployment=QdrantDeployment.CLOUD)
+    return ParentRepository(config=runtime.mongo)
 
 
 # ============================================================

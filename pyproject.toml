@@ -23,3 +23,6 @@ dependencies = [
     "tiktoken>=0.13.0",
     "transformers>=5.15.0",
 ]
+
+[project.scripts]
+agentic-rag = "app.cli:main"

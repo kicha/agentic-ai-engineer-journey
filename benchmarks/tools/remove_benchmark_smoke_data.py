@@ -1,6 +1,6 @@
 import logging
 
-from app.config.settings import ChunkingConfig
+from app.config.settings import MongoConfig
 from app.repositories.parent_repository import ParentRepository
 from app.utils.logging_config import configure_logging
 
@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 def main() -> None:
 
     configure_logging()
-    config = ChunkingConfig()
+    config = MongoConfig()
     repository = ParentRepository(config)
 
     try:

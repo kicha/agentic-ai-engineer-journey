@@ -3,14 +3,8 @@ from __future__ import annotations
 import json
 import logging
 
-from app.config.settings import (
-    ChunkingConfig,
-    CloudConfig,
-    DenseEmbeddingProvider,
-    HybridSearchConfig,
-    QdrantConfig,
-    QdrantDeployment,
-)
+from app.application_factory import build_runtime_configs
+from app.config.settings import QdrantDeployment
 
 from app.embeddings.factory import (
     create_dense_embedding_service,
@@ -73,33 +67,22 @@ def build_child_retriever() -> HybridChildRetriever:
     Vector database: Qdrant Cloud
     """
 
-    config = ChunkingConfig(
-        dense_embedding_provider=(DenseEmbeddingProvider.CLOUD),
-    )
-
-    cloud_config = CloudConfig()
-
-    hybrid_search_config = HybridSearchConfig(
-        collection_name=("structure_aware_v4_benchmark_v2_cloud"),
-    )
-
-    qdrant_config = QdrantConfig(
-        deployment=QdrantDeployment.CLOUD,
-    )
+    runtime = build_runtime_configs(deployment=QdrantDeployment.CLOUD)
 
     embedding_service = create_dense_embedding_service(
-        config=config,
-        cloud_config=cloud_config,
+        config=runtime.embedding,
+        cloud_config=runtime.cloud,
     )
 
     sparse_embedding_service = create_sparse_embedding_service(
-        config=config,
+        config=runtime.embedding,
     )
 
     vector_store = HybridQdrantStore(
-        config=hybrid_search_config,
-        vector_size=(embedding_service.embedding_dimension),
-        qdrant_config=qdrant_config,
+        config=runtime.hybrid,
+        vector_size=embedding_service.embedding_dimension,
+        qdrant_config=runtime.qdrant,
+        collection_name=runtime.collection_name,
     )
 
     return HybridChildRetriever(
@@ -118,11 +101,8 @@ def build_parent_repository() -> ParentRepository:
     authoritative ParentChunks used by the production architecture.
     """
 
-    config = ChunkingConfig()
-
-    return ParentRepository(
-        config=config,
-    )
+    runtime = build_runtime_configs(deployment=QdrantDeployment.CLOUD)
+    return ParentRepository(config=runtime.mongo)
 
 
 # ============================================================

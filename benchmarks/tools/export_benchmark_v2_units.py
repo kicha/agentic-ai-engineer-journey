@@ -1,21 +1,17 @@
+import argparse
 import logging
 from typing import Any
 
 from pydantic import BaseModel
-
-from app.config.settings import (
-    ChunkingConfig,
-    HybridSearchConfig,
-)
 from qdrant_client import QdrantClient
+
+from app.application_factory import build_runtime_configs
+from app.config.settings import QdrantDeployment
 from app.repositories.parent_repository import ParentRepository
-from benchmarks.paths import (
-    BENCHMARK_UNITS_PATH,
-)
 from app.utils.logging_config import configure_logging
+from benchmarks.paths import BENCHMARK_UNITS_PATH
 
 logger = logging.getLogger(__name__)
-
 OUTPUT_PATH = BENCHMARK_UNITS_PATH
 
 
@@ -47,66 +43,42 @@ class BenchmarkUnitsExport(BaseModel):
 
 
 class BenchmarkV2UnitExporter:
-    """
-    Export the frozen Benchmark V2 persistence universe.
-
-    MongoDB is authoritative for ParentChunks.
-
-    Qdrant is authoritative for ChildChunk retrieval payloads.
-
-    The output is intended for:
-        - gold judgment authoring
-        - manual inspection
-        - benchmark debugging
-        - future reproducibility
-    """
-
-    def __init__(
-        self,
-        chunking_config: ChunkingConfig,
-        hybrid_config: HybridSearchConfig,
-    ) -> None:
-
-        self.chunking_config = chunking_config
-        self.hybrid_config = hybrid_config
-
-        self.parent_repository = ParentRepository(chunking_config)
-
-        qdrant_url = (
-            f"http://{chunking_config.qdrant_host}:" f"{chunking_config.qdrant_port}"
+    def __init__(self, *, deployment: QdrantDeployment, collection_name: str | None = None) -> None:
+        self.runtime = build_runtime_configs(
+            deployment=deployment,
+            collection_name=collection_name,
         )
+        self.parent_repository = ParentRepository(self.runtime.mongo)
 
-        self.qdrant_client = QdrantClient(url=qdrant_url)
+        if deployment == QdrantDeployment.LOCAL:
+            self.qdrant_client = QdrantClient(
+                url=self.runtime.qdrant.local_url,
+                timeout=self.runtime.qdrant.timeout_seconds,
+            )
+        else:
+            if not self.runtime.qdrant.cloud_url or not self.runtime.qdrant.api_key:
+                raise ValueError("QDRANT_URL and QDRANT_API_KEY are required for cloud export.")
+            self.qdrant_client = QdrantClient(
+                url=self.runtime.qdrant.cloud_url,
+                api_key=self.runtime.qdrant.api_key,
+                cloud_inference=self.runtime.qdrant.cloud_inference,
+                timeout=self.runtime.qdrant.timeout_seconds,
+            )
 
     def export(self) -> BenchmarkUnitsExport:
         parents = self._load_parents()
         children = self._load_children()
-        children_by_parent_key: dict[
-            str,
-            list[ChildExport],
-        ] = {}
+        children_by_parent_key: dict[str, list[ChildExport]] = {}
 
         for child in children:
-
-            children_by_parent_key.setdefault(
-                child.parent_key,
-                [],
-            ).append(child)
+            children_by_parent_key.setdefault(child.parent_key, []).append(child)
 
         exported_parents: list[ParentExport] = []
-
         for parent in parents:
-
-            parent_children = children_by_parent_key.get(
-                parent.parent_key,
-                [],
-            )
-
             parent_children = sorted(
-                parent_children,
+                children_by_parent_key.get(parent.parent_key, []),
                 key=lambda child: child.child_index,
             )
-
             exported_parents.append(
                 ParentExport(
                     parent_id=parent.parent_id,
@@ -125,58 +97,33 @@ class BenchmarkV2UnitExporter:
             child_count=len(children),
             parents=exported_parents,
         )
-
         logger.info(f"parent_count={result.parent_count}")
         logger.info(f"child_count={result.child_count}")
-
         return result
 
-    def _load_parents(
-        self,
-    ) -> list[Any]:
-
+    def _load_parents(self) -> list[Any]:
         documents = list(self.parent_repository.collection.find({}))
-
         parents = [
             self.parent_repository._from_document(document) for document in documents
         ]
-
-        parents.sort(
-            key=lambda parent: (
-                parent.document_id,
-                parent.parent_index,
-            )
-        )
-
+        parents.sort(key=lambda parent: (parent.document_id, parent.parent_index))
         return parents
 
-    def _load_children(
-        self,
-    ) -> list[ChildExport]:
-
+    def _load_children(self) -> list[ChildExport]:
         children: list[ChildExport] = []
-
         next_offset = None
-
         while True:
-
             points, next_offset = self.qdrant_client.scroll(
-                collection_name=(self.hybrid_config.collection_name),
+                collection_name=self.runtime.collection_name,
                 limit=100,
                 offset=next_offset,
                 with_payload=True,
                 with_vectors=False,
             )
-
             for point in points:
-
                 payload = point.payload
-
                 if payload is None:
-                    raise RuntimeError(
-                        f"Qdrant point has no payload: " f"point_id={point.id}"
-                    )
-
+                    raise RuntimeError(f"Qdrant point has no payload: point_id={point.id}")
                 children.append(
                     ChildExport(
                         child_id=payload["child_id"],
@@ -188,7 +135,6 @@ class BenchmarkV2UnitExporter:
                         content=payload["content"],
                     )
                 )
-
             if next_offset is None:
                 break
 
@@ -199,44 +145,33 @@ class BenchmarkV2UnitExporter:
                 child.child_index,
             )
         )
-
         return children
 
-    def close(
-        self,
-    ) -> None:
-
+    def close(self) -> None:
         self.parent_repository.close()
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("--local", action="store_true")
+    group.add_argument("--cloud", action="store_true")
+    parser.add_argument("--collection", default=None)
+    args = parser.parse_args()
 
-    chunking_config = ChunkingConfig()
-
-    hybrid_config = HybridSearchConfig()
-
+    deployment = QdrantDeployment.LOCAL if args.local else QdrantDeployment.CLOUD
     exporter = BenchmarkV2UnitExporter(
-        chunking_config=chunking_config,
-        hybrid_config=hybrid_config,
+        deployment=deployment,
+        collection_name=args.collection,
     )
-
     try:
-
         result = exporter.export()
-
-        OUTPUT_PATH.write_text(
-            result.model_dump_json(indent=2),
-            encoding="utf-8",
-        )
-
+        OUTPUT_PATH.write_text(result.model_dump_json(indent=2), encoding="utf-8")
         logger.info(f"benchmark_units_written={OUTPUT_PATH}")
-
     finally:
-
         exporter.close()
 
 
 if __name__ == "__main__":
-
     configure_logging()
     main()
