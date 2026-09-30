@@ -1,0 +1,15 @@
+qdrant-client
+sentence-transformers
+nltk
+langchain
+langgraph
+langchain-groq
+python-dotenv
+ipykernel
+groq
+transformers
+ipywidgets
+pydantic
+pymongo[srv]
+qdrant-client[fastembed]
+fastapi[standard]
